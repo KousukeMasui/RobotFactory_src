@@ -3,7 +3,6 @@
 #include"../../Actor/Base/IWorld.h"
 #include"../../Actor/Base/ActorGroup.h"
 
-#include"Input/Input.h"
 #include"Input/Mouse/Mouse.h"
 #include"Loader/Loader.h"
 #include"Actor/Unit/Unit.h"
@@ -18,6 +17,7 @@
 #include"State/Command/GamePlayCommand.h"
 #include"State/Auto/GamePlayAutoState.h"
 #include"State/GamePlayStateID.h"
+#include"Input/InputManager.h"
 //コンストラクタ
 GamePlayScene::GamePlayScene(const std::shared_ptr<World>& world, bool& isWin) :
 m_world(world),
@@ -55,7 +55,7 @@ void GamePlayScene::Update(float deltaTime)
 	}
 	else
 	{
-		Input::GetInstance().Update();
+		InputManager::GetInstance().Update();
 	}
 
 	m_stateManager.Update(deltaTime);

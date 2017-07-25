@@ -53,4 +53,6 @@ private:
 	//プレイヤー
 	std::shared_ptr<Player> m_player;
 	DrawCommand m_command;
+	//Sprite更新中に削除は危険なのでそれを回避する変数
+	std::function<void()> m_deleteFunc;
 };

@@ -1,7 +1,9 @@
 #include "LerpCursor.h"
 #include"Actor/Unit/Unit.h"
 LerpCursor::LerpCursor(const MyVector3& position):
-	SelectCursor(position)
+	SelectCursor(position),
+	m_targetPosition(position),
+	m_speed(5.0f)
 {
 }
 
@@ -9,10 +11,14 @@ LerpCursor::~LerpCursor()
 {
 }
 
-void LerpCursor::Update(const MyVector3 & position, float deltaTime)
+void LerpCursor::SetPosition(const MyVector3 & position)
 {
-	m_position = MyVector3::Lerp(m_position, position, 0.1f * deltaTime);
+	m_targetPosition = position;
+}
+
+void LerpCursor::OnUpdate(float deltaTime)
+{
+	m_position += MyVector3(m_targetPosition - m_position).Normalize()* m_speed;
 	m_position.y = 1.0f;
-	m_sphere.m_center = m_position;
 }
 

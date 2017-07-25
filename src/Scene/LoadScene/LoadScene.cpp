@@ -29,8 +29,9 @@ void LoadScene::ResourceLoad()
 	Loader::GetInstance().ModelLoad(MODEL_ID::BOX, "res/Model/Shapes/BaseShape_Box.mv1");
 	Loader::GetInstance().ModelLoad(MODEL_ID::UNIT, "res/Model/Unit/N_YAN.mv1");
 	Loader::GetInstance().ModelLoad(MODEL_ID::PARTS, "res/Model/Parts/bolt1.mv1");
+	Loader::GetInstance().ModelLoad(MODEL_ID::ROOT, "res/Model/Effect/root.mv1");
 	//テクスチャ読み込み
-	Loader::GetInstance().TextureLoad(TEXTURE_ID::TITLE_LOGO, "res/Texture/Title/cooltext251389256596263.png");
+	Loader::GetInstance().TextureLoad(TEXTURE_ID::TITLE_LOGO, "res/Texture/Title/title_logo.png");
 	Loader::GetInstance().TextureLoad(TEXTURE_ID::CLICK_TO_START, "res/Texture/Title/click_to_start.png");
 	Loader::GetInstance().TextureLoad(TEXTURE_ID::BLACK, "res/Texture/Command/black.png");
 	Loader::GetInstance().TextureLoad(TEXTURE_ID::BACK, "res/Texture/Command/Back.png");
@@ -73,7 +74,6 @@ void LoadScene::Initialize()
 	
 	m_manager.AddSprite((int)TEXTURE_ID::BLACK, std::make_shared<Sprite>(TEXTURE_ID::BLACK, MyVector2(), MyVector2((float)Screen::SCREEN_SIZE.x, (float)Screen::SCREEN_SIZE.y), MyVector2(0.5f, 0.5f)));
 
-
 	SetUseASyncLoadFlag(true);//非同期開始
 	ResourceLoad();
 	SetUseASyncLoadFlag(false);//非同期終了
@@ -94,12 +94,12 @@ void LoadScene::Draw() const
 
 bool LoadScene::IsEnd() const
 {
-	return GetASyncLoadNum() == 0;
+	return GetASyncLoadNum() == 0;//非同期読み込みが終わったら
 }
 
 void LoadScene::End()
 {
-	m_manager.Clear();
+	m_manager.Clear();//画像を開放
 }
 
 int LoadScene::Next() const

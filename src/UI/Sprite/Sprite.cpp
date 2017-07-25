@@ -3,7 +3,9 @@
 #include<DxLib.h>
 #include"Loader/Loader.h"
 #include"Screen/Screen.h"
-Sprite::Sprite():UI(MyVector2(), Color::White){
+Sprite::Sprite():UI(MyVector2(), Color::White),
+m_texID(TEXTURE_ID::NONE),m_scale(),m_center(),m_texSize(),m_rad(0.0f),
+m_rect(),m_drawScale(){
 }
 Sprite::Sprite(TEXTURE_ID id,MyVector2 position, MyVector2 scale, MyVector2 center) :
 	UI(position,Color::White),

@@ -3,6 +3,7 @@
 #include"Effect/Manager/EffectManager.h"
 #include"Actor/Light/Light.h"
 #include"PartsCreater\PartsCreater.h"
+#include"CSVReader/CSVReader.h"
 //コンストラクタ
 World::World() :
 	m_actors(),
@@ -10,12 +11,10 @@ World::World() :
 	m_gameManager(nullptr),
 	m_isPouse(false),
 	m_isUIDraw(false),
-	m_fieldMap(),
 	m_cameraMode(CameraMode::NORMAL),
 	m_field(nullptr),
 	m_effectManager(std::make_shared<EffectManager>()),
-	m_billBoardManager(this),
-	m_metaAI()
+	m_billBoardManager(this)
 {
 }
 
@@ -40,8 +39,6 @@ void World::Update(float deltaTime)
 		if(m_debug!= nullptr) m_debug->Update(deltaTime);
 	}
 	m_billBoardManager.Update();
-
-	m_metaAI.Update();
 }
 
 //描画
@@ -74,15 +71,16 @@ void World::Draw() const
 void World::StageCreate()
 {
 	m_gameManager = std::make_shared<GameManager>();
-	m_gameManager->AddUnitFactory(*this, InfluenceID::NONE, MyVector3(606.0f, 0.0f, 356.0f));
-	m_gameManager->AddUnitFactory(*this, InfluenceID::NONE, MyVector3(1108.0f, 0.0f, 512.0f));
-	m_gameManager->AddUnitFactory(*this, InfluenceID::NONE, MyVector3(528.0f, 0.0f, 1258.0f));
-	m_gameManager->AddUnitFactory(*this, InfluenceID::NONE, MyVector3(1091.0f, 0.0f, 1085.0f));
+	CSVReader csv("res/csv/factoryPosition.csv");
 
-	m_gameManager->AddUnitFactory(*this, InfluenceID::PLAYER, MyVector3(312.0f, 0.0f, 835.0f));
-	m_gameManager->AddUnitFactory(*this, InfluenceID::ENEMY, MyVector3(1348.0f, 0.0f, 790.0f));
-
-	m_metaAI.Start(&*m_gameManager);
+	for (int row = 1; row < csv.rows(); row++)
+	{
+		InfluenceID id;
+		if (csv.get(row, 0) == "NONE") id = InfluenceID::NONE;
+		if (csv.get(row, 0) == "PLAYER") id = InfluenceID::PLAYER;
+		if (csv.get(row, 0) == "ENEMY") id = InfluenceID::ENEMY;
+		m_gameManager->AddUnitFactory(*this, id, MyVector3(csv.getf(row, 1), csv.getf(row, 2), csv.getf(row, 3)));
+	}
 	AddLight(std::make_shared<Light>(*this, MyVector3(451.1f, 290.28f, 843.94f)));
 	m_field = std::make_shared<Field>();
 }
@@ -90,8 +88,8 @@ void World::StageCreate()
 void World::GameStart()
 {
 	m_gameManager->GameStart(*this);
-
 	AddActor(ActorGroup::PARTS_CREATER, std::make_shared<PartsCreater>(*this));
+
 }
 
 void World::GameEnd()
@@ -174,11 +172,6 @@ GameManager & World::GetGameManager()
 {
 	return *m_gameManager;
 }
-
-FieldMap & World::GetFieldMap()
-{
-	return m_fieldMap;
-}
 void World::DebugSet(Enemy * enemy)
 {
 	m_debug = std::make_shared<Debug>(*this, enemy->Cursor());
@@ -207,9 +200,4 @@ bool World::IsCommand() const
 FactoryPtr World::GetCommandFactory() const
 {
 	return m_commandFactory;
-}
-
-MetaAI & World::GetMetaAI()
-{
-	return m_metaAI;
 }

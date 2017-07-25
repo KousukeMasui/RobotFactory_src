@@ -1,27 +1,35 @@
 #pragma once
 
-
+#include<map>
+	enum class UNIT_STATUS_ID {
+		HP = 0,
+		ATK,
+		SPD,
+		RANGE,
+		MAX_HP
+	};
+class GameManager;
 //ユニットのゲーム状態で変化するステータス
 class UnitStatus
 {
 public:
-	UnitStatus(int factoryMaxHP = 0, float hp = 0.0f, int attack = 0, int speed = 0,float range = 0.0f);
+	UnitStatus(int hpLevel = 0, int attackLevel = 0, int speedLevel = 0, float range = 0.0f, GameManager* manager = nullptr);
 
 	//現在のHPのパーセントを1~0で返す
 	float hpPercent() const;
-	//実際の移動速度を返す
-	float MoveSpeed() const;
-	int factoryMaxHP;	//体力の上限 工場用変数　maxHPはこれを元に計算する
-	int maxHP;	//体力の上限
-	float hp;		//現在の体力
-	int attack;	//攻撃力
-	int speed;	//移動速度
-	float range;
+
+	int Level(UNIT_STATUS_ID id) const;
+	float Status(UNIT_STATUS_ID id) const;
+
+	void AddHP(float hp);
+private:
+	//工場のステータスを受け取る
+	std::map<UNIT_STATUS_ID, int> m_levels;
+	//ゲーム上の実際のステータス
+	std::map<UNIT_STATUS_ID, float> m_status;
 };
 
 UnitStatus operator +(const UnitStatus& s1, const UnitStatus& s2);
 UnitStatus operator +=(UnitStatus& s1, const UnitStatus& s2);
 UnitStatus operator -(const UnitStatus& s1, const UnitStatus& s2);
 UnitStatus operator -=(UnitStatus& s1, const UnitStatus& s2);
-bool operator ==(const UnitStatus& s1, const UnitStatus& s2);
-bool operator !=(const UnitStatus& s1, const UnitStatus& s2);

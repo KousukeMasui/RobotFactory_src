@@ -13,7 +13,9 @@ public:
 	~SelectCursor();
 
 	//更新 指定された位置までを移動する
-	virtual void Update(const MyVector3& targetPosition,float deltaTime);
+	void Update(float deltaTime);
+	virtual void OnUpdate(float deltaTime) {}
+	virtual void SetPosition(const MyVector3& position);
 	//描画
 	void Draw(const Color& color) const;
 	//当たり判定

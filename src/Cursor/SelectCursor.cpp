@@ -15,13 +15,18 @@ SelectCursor::~SelectCursor()
 {
 }
 
-void SelectCursor::Update(const MyVector3 & targetPosition, float deltaTime)
+void SelectCursor::Update(float deltaTime)
 {
-	m_position = targetPosition;
-	m_position.y = 0.0f;
+	OnUpdate(deltaTime);
 	m_sphere.m_center = m_position;
 
 	m_rotate *= MyMatrix4::RotateY(Converter::DegToRad(deltaTime));
+}
+
+void SelectCursor::SetPosition(const MyVector3 & position)
+{
+	m_position = position;
+	m_position.y = 0.0f;
 }
 
 void SelectCursor::Draw(const Color & color) const

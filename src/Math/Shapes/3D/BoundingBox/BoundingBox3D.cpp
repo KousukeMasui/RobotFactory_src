@@ -195,7 +195,6 @@ HitInfo BoundingBox3D::IsCollide(const Ray & ray) const
 			}
 		}
 	}
-	//if (!isHit) return false;
 
 	hit.isHit = true;
 	// 光線が3つのスラブすべてに交差している。点(q)と交差のtの値(tmin)を返す

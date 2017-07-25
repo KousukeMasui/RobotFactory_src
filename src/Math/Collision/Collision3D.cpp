@@ -4,48 +4,6 @@
 
 #include"../Shapes/3D/Sphere/Sphere.h"
 #include"../Shapes/3D/Capsule/Capsule.h"
-/// <summary>
-/// 線と球の当たり判定
-/// </summary>
-/// <param name="p1">線の始点</param>
-/// <param name="p2">線の終点</param>
-/// <param name="radius">半径</param>
-/// <param name="circlePos">球の位置</param>
-/// <param name="contactPoint">接点</param>
-/// <returns></returns>
-bool Collision3D::Line_Sphere_Extrusion(const MyVector3 & p1, const MyVector3 & p2, float radius, MyVector3 & circlePos, MyVector3 & contactPoint)
-{
-	MyVector3 v = p2 - p1;//線の方向ベクトル
-	MyVector3 v1 = circlePos - p1;//始点から球体への方向ベクトル
-
-	float t = MyVector3::Dot(v, v1) / MyVector3::Dot(v, v);
-
-	MyVector3 vt = t * v;
-	MyVector3 vn = v1 - vt;
-
-	//p1の外側か
-	if (0 < t && v1.Length() < radius)
-	{
-		contactPoint = p1;
-		circlePos = p1 + MyVector3::Normalize(v1) * radius;
-		return true;
-	}
-	MyVector3 v2 = circlePos - p2;
-	if (t > 1 && v2.Length() < radius)//v2より外側
-	{
-		contactPoint = p2;
-		circlePos = p2 + MyVector3::Normalize(v2) * radius;
-		return true;
-	}
-	if ((0 < t && t < 1) && vn.Length() < radius)
-	{
-		MyVector3 vr = MyVector3::Normalize(vn) * radius;
-		circlePos = p1 + vt + vr;
-		contactPoint = p1 + vt;
-		return true;
-	}
-	return false;
-}
 
 bool Collision3D::Line_Sphere(const MyVector3 & p1, const MyVector3 & p2, float radius, const MyVector3 & circlePos, MyVector3 & contactPoint)
 {

@@ -18,7 +18,7 @@ UnitPtrs PriorityReturnFactory::GetUnits()
 	for (auto unit : m_units)//条件を満たしていないユニットを除外
 	{
 		if (unit->GetLift() == nullptr) continue; //物を持っていないユニットは除外
-		if (unit->IsMove()) continue;//移動中のユニットは除外
+		if (unit->Agent().IsMove()) continue;//移動中のユニットは除外
 		if (!unit->GetLift()->IsLiftEnd()) continue;
 		if (unit->GetModel().GetAnimationID() == (int)UnitAnimationID::LIFT_DOWN) continue;
 		result.push_back(unit);

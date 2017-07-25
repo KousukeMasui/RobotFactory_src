@@ -24,14 +24,16 @@ void LiftMoveNode::End()
 
 bool LiftMoveNode::Branch()
 {
-	return m_unit.IsMove();
+	return m_unit.Agent().IsMove();
 }
 
 void LiftMoveNode::OnUpdate(float deltaTime)
 {
 	//ˆÚ“®
-	m_unit.LerpToVelocity(m_unit.GetVelocity());//‰ñ“]‚³‚¹‚é
-	m_unit.Move(m_unit.GetVelocity() * m_unit.GetStatus().MoveSpeed());
+
+	m_unit.Agent().RotateToNext(deltaTime);
+
+	m_unit.Move(m_unit.Agent().ToNextVelocity() * m_unit.GetStatus().Status(UNIT_STATUS_ID::SPD));
 
 	m_unit.GetLift()->LiftUp(m_unit);
 }

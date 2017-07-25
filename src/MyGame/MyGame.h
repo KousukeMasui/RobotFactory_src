@@ -2,7 +2,6 @@
 #define	 _MY_GAME_H_
 
 #include"../Scene/Base/SceneManager.h"
-#include"Input/Input.h"
 #include"Base\FPS.h"
 #include"World/World.h"
 #include<memory>
@@ -17,7 +16,6 @@ private:
 	void Update(float deltaTime);
 	void Draw();
 	void End();
-
 private:
 	//ワールドクラス
 	std::shared_ptr<World> m_world;

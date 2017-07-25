@@ -21,12 +21,12 @@ void OrderHealState::Initialize()
 {
 	float t;
 	m_targetPosition = m_factory->GetHeal().GetSphere().IsCollide(m_line,t).hitPosition;
-
+	m_cursor->SetPosition(m_targetPosition);
 }
 
 void OrderHealState::Update(float deltaTime)
 {
-	m_cursor->Update(m_targetPosition, deltaTime);
+	m_cursor->Update(deltaTime);
 }
 
 void OrderHealState::Draw() const
@@ -42,14 +42,12 @@ void OrderHealState::End()
 
 		if (factory->IsCollide(m_line).isHit)
 		{
-			PathFinder f(m_world.GetFieldMap());
-			m_unit->Message((int)UnitMessageID::ROOT_VECTOR, 
-				&PathFind3DUtility::ToRoad(f.FindTarget(PathFind3DUtility::ToNodePoint2(m_unit->Position(),f), 
-					PathFind3DUtility::ToNodePoint2(m_targetPosition)), f));
+			m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
+				m_targetPosition, m_unit->Agent());
 			return;
 		}
 	}
-	m_unit->Message((int)UnitMessageID::ROOT, &m_cursor->Position());
+	m_unit->Agent().SetRoot(m_cursor->Position());
 }
 
 int OrderHealState::Next() const

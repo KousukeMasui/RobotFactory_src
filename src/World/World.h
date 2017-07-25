@@ -8,11 +8,9 @@
 #include"Actor/Influence/Player/Player.h"
 #include"Actor/Influence/Enemy/Enemy.h"
 #include"Manager\GameManager.h"
-#include"Base\RoadFinder\Map\FieldMap.h"
 #include"UI/FactoryUI/FactoryUI.h"
 #include"Debug\Debug.h"
 #include"UI/Sprite\BillBoard\Manager\BillBoardManager.h"
-#include"Actor/Influence/AIAction/MetaAI/MetaAI.h"
 #include"UI/Sprite/Base/WorldToSpriteManager.h"
 class EffectManager;
 
@@ -72,8 +70,6 @@ public:
 	virtual  UIManager& GetUIManager() override;
 
 	virtual GameManager& GetGameManager() override;
-
-	virtual FieldMap& GetFieldMap() override;
 	//コピー禁止
 	World(const World& other) = delete;
 	World& operator=(const World& other) = delete;
@@ -88,7 +84,6 @@ public:
 	void Command(const FactoryPtr& factory = nullptr) override;
 	bool IsCommand() const;
 	FactoryPtr GetCommandFactory() const override;
-	MetaAI& GetMetaAI() override;
 private:
 	//ゲームの状態のステートパターン
 	StateManager m_gameStateManager;
@@ -104,13 +99,10 @@ private:
 
 	bool m_isPouse;
 	bool m_isUIDraw;
-	FieldMap m_fieldMap;
 	std::shared_ptr<EffectManager> m_effectManager;
 	//ビルボードマネージャー
 	BillBoardManager m_billBoardManager;
 	FactoryPtr m_commandFactory;
-	//メタAI
-	MetaAI m_metaAI;
 	//デバッグ
 	std::shared_ptr<Debug> m_debug;
 	//ワールド座標用スプライトクラス

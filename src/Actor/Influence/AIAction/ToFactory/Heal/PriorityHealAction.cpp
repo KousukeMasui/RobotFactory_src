@@ -39,7 +39,7 @@ UnitPtrs PriorityHealAction::GetUnits()
 		for (auto factory : factorys)
 			if (unit->GetSphere().IsCollide(factory->GetHeal().GetSphere())) continue;
 		if (unit->GetStatus().hpPercent() <= m_hpPer &&//ˆê’èHPˆÈ‰º
-			!unit->IsMove())//ˆÚ“®’†‚Å‚È‚¢
+			!unit->Agent().IsMove())//ˆÚ“®’†‚Å‚È‚¢
 			result.push_back(unit);
 	}
 	return result;

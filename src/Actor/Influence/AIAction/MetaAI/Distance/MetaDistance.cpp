@@ -54,10 +54,10 @@ LiftObjectPtr MetaDistance::GetNearLift(const Unit & unit, const std::function<b
 
 	return NearLeft(unit,lifts);
 }
-UnitPtr MetaDistance::GetNearUnit(const Unit & unit)
+UnitPtr MetaDistance::GetNearUnit(const Object& obj)
 {
 	auto units = m_manager->GetUnitManager().All();
-	return NearUnit(unit, units);
+	return NearUnit(obj, units);
 }
 
 float MetaDistance::Distance(const Object& o1, const Object& o2)
@@ -77,17 +77,18 @@ float MetaDistance::Distance(const LiftObject & l, UnitFactory* f)
 }
 
 
-UnitPtr MetaDistance::NearUnit(const Unit & unit, const UnitPtrs & units)
+UnitPtr MetaDistance::NearUnit(const Object& obj, const UnitPtrs & units)
 {
+	if (units.empty()) return nullptr;
 	UnitPtr result = nullptr;
 	float min = FLT_MAX;
 	for (const auto u : units)
 	{
 
 		//同じユニットでは計算をしない
-		if (&*u == &unit) continue;
+		if (&*u == &obj) continue;
 
-		float distance = Distance(*u, unit);
+		float distance = Distance(*u, obj);
 		if (distance <= min)
 		{
 			min = distance;

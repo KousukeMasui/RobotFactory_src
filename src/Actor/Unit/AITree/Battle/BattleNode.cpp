@@ -31,11 +31,12 @@ void BattleNode::End()
 {
 	if (m_target != nullptr)//ユニットを狙う場合
 	{
-		m_target->Message((int)UnitMessageID::DAMAGE, &m_unit.GetStatus().attack);
+		float atk = m_unit.GetStatus().Status(UNIT_STATUS_ID::ATK);
+		m_target->Message((int)UnitMessageID::DAMAGE, &atk);
 	}
 	else
 	{
-		m_targetFactory->Damage(m_unit.GetStatus().attack, m_unit.GetInfluence());
+		m_targetFactory->Damage(m_unit.GetStatus().Status(UNIT_STATUS_ID::ATK), m_unit.GetInfluence());
 	}
 }
 
@@ -44,10 +45,11 @@ bool BattleNode::Branch()
 	//物を持っている場合戦闘に入らない
 	if (m_unit.GetLift() != nullptr) return false;
 	//一番近い生きてるユニットを取得
-	m_target = m_world.GetMetaAI().Distance().GetNearUnitOtherInfluence(m_unit, 
+	m_target = m_world.GetGameManager().GetMetaAI().Distance().GetNearUnitOtherInfluence(m_unit, 
 		[&](const Unit& unit) {return !unit.IsDead() && unit.GetInfluence() != m_unit.GetInfluence(); });
 	
-	if (m_target != nullptr && m_world.GetMetaAI().Distance().Distance(m_unit,*m_target) <= MyVector3(40,40).Length())//一番近いユニットとの距離が一定範囲いないだったら攻撃状態へ
+	if (m_target != nullptr && m_world.GetGameManager().GetMetaAI().Distance().Distance(m_unit,*m_target) <= 
+		m_world.GetGameManager().GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_ATTACK_RANGE,1))//一番近いユニットとの距離が一定範囲いないだったら攻撃状態へ
 	{
 		m_targetFactory = nullptr;
 		return true;
@@ -86,7 +88,7 @@ void BattleNode::OnUpdate(float deltaTime)
 	}
 	
 	//現在のrotateと敵までの方向が10度以内になったら
-	if (m_unit.LerpToVelocity(targetPosition - m_unit.Position()))
+	if (m_unit.RotateVelocity(targetPosition - m_unit.Position(),deltaTime))
 	{
 		//攻撃モーションの再生
 		m_unit.GetModel().ChangeAnimation((int)UnitAnimationID::ATTACK, false);
@@ -100,8 +102,8 @@ bool BattleNode::SetIsEnd()
 {
 	return ((m_unit.GetModel().GetAnimationID() == UnitAnimationID::ATTACK && m_unit.GetModel().GetAnimationTime() >= 34.53f)||
 		(m_target != nullptr&& m_target->NodeID()==(int)UnitNodeID::DEAD)||//相手のユニットが死んだ場合
-		//(m_world.GetMetaAI().Distance().Distance(*m_target,m_unit) <=0.0f) ||//相手のユニットが離れていった場合
+		//(m_world.GetGameManager().GetMetaAI().Distance().Distance(*m_target,m_unit) <=0.0f) ||//相手のユニットが離れていった場合
 		(m_targetFactory != nullptr && m_targetFactory->GetParam().influence == m_unit.GetInfluence()) ||//工場の勢力が変わった場合
-			m_unit.IsMove()//移動開始したら
+			m_unit.Agent().IsMove()//移動開始したら
 			);
 }

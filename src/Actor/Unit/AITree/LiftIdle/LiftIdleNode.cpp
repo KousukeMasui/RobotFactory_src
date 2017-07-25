@@ -36,7 +36,7 @@ bool LiftIdleNode::Branch()
 
 void LiftIdleNode::OnUpdate(float deltaTime)
 {
-	m_unit.RoadDelete();
+	m_unit.Agent().Delete();
 	m_unit.GetLift()->LiftUp(m_unit);
 }
 

@@ -9,7 +9,7 @@
 /// <param name="linePos2">線分の終点</param>
 /// <returns></returns>
 
-bool Collision2D::Circle_Line(MyVector2 circlePos, float circleRadius, MyVector2 linePos1, MyVector2 linePos2, MyVector2 & ansCirclePos)
+bool Collision2D::Circle_Line(const MyVector2& circlePos, float circleRadius, const MyVector2& linePos1, const MyVector2& linePos2, MyVector2 & ansCirclePos)
 {
 	MyVector2 v1 = circlePos - linePos1;//p1からの円までのベクトル
 	MyVector2 v = linePos2 - linePos1;//線のベクトル
@@ -66,7 +66,7 @@ bool Collision2D::Circle_Line(MyVector2 circlePos, float circleRadius, MyVector2
 /// <param name="I">交差座標を返す</param>
 /// <returns></returns>
 
-bool Collision2D::Line_Line(MyVector2 p0, MyVector2 p1, MyVector2 p2, MyVector2 p3, MyVector2 & I)
+bool Collision2D::Line_Line(const MyVector2& p0, const MyVector2& p1, const MyVector2& p2, const MyVector2& p3, MyVector2 & I)
 {
 	MyVector2 a = p1 - p0;//線分1
 	MyVector2 b = p3 - p2;//線分2
@@ -84,7 +84,7 @@ bool Collision2D::Line_Line(MyVector2 p0, MyVector2 p1, MyVector2 p2, MyVector2 
 	return true;
 }
 
-bool Collision2D::Line_Line(Line2D l1, Line2D l2, MyVector2 & I)
+bool Collision2D::Line_Line(const Line2D& l1, const Line2D& l2, MyVector2 & I)
 {
 	return Line_Line(l1.p1, l1.p2, l2.p1, l2.p2, I);
 }
@@ -99,7 +99,7 @@ bool Collision2D::Line_Line(Line2D l1, Line2D l2, MyVector2 & I)
 /// <param name="cr">円の半径</param>
 /// <returns></returns>
 
-bool Collision2D::Capsule_Circle(MyVector2 p1, MyVector2 p2, float r, MyVector2 cp, float cr)
+bool Collision2D::Capsule_Circle(const MyVector2& p1, const MyVector2& p2, float r, const MyVector2& cp, float cr)
 {
 	MyVector2 v = MyVector2();
 	return Circle_Line(cp, cr + r, p1, p2, v);
@@ -115,7 +115,7 @@ bool Collision2D::Capsule_Circle(MyVector2 p1, MyVector2 p2, float r, MyVector2 
 /// <param name="lp2"></param>
 /// <returns></returns>
 
-bool Collision2D::Capsule_Line(MyVector2 p1, MyVector2 p2, float r, MyVector2 lp1, MyVector2 lp2, MyVector2 contactPos)
+bool Collision2D::Capsule_Line(const MyVector2& p1, const MyVector2& p2, float r, const MyVector2& lp1, const MyVector2& lp2, MyVector2& contactPos)
 {
 	if (Line_Line(p1, p2, lp1, lp2, contactPos)) return true;
 	if (Circle_Line(p1, r, lp1, lp2, contactPos)) return true;
@@ -124,7 +124,7 @@ bool Collision2D::Capsule_Line(MyVector2 p1, MyVector2 p2, float r, MyVector2 lp
 	return false;
 }
 
-bool Collision2D::Capsule_Capsule(MyVector2 p1, MyVector2 p2, MyVector2 p3, MyVector2 p4, float r1, float r2)
+bool Collision2D::Capsule_Capsule(const MyVector2& p1, const MyVector2& p2, const MyVector2& p3, const MyVector2& p4, float r1, float r2)
 {
 
 	float radius = r1 + r2;
@@ -132,7 +132,7 @@ bool Collision2D::Capsule_Capsule(MyVector2 p1, MyVector2 p2, MyVector2 p3, MyVe
 	return Capsule_Line(p1, p2, radius, p3, p4, MyVector2());
 }
 
-bool Collision2D::Circle_Ray(MyVector2 p1, MyVector2 p2, MyVector2 pc, float r)
+bool Collision2D::Circle_Ray(const MyVector2& p1, const MyVector2& p2, const MyVector2& pc, float r)
 {
 	MyVector2 v = p2 - p1;//rayの方向
 	MyVector2 v1 = p1 - pc;//円からrayの始点へのベクトル
@@ -148,7 +148,7 @@ bool Collision2D::Circle_Ray(MyVector2 p1, MyVector2 p2, MyVector2 pc, float r)
 	return false;
 }
 
-bool Collision2D::Square_Point(MyVector2 point, MyVector2 squareLeftUp, MyVector2 squareRightBottom)
+bool Collision2D::Square_Point(const MyVector2& point, const MyVector2& squareLeftUp, const MyVector2& squareRightBottom)
 {
 	if (point.x > squareRightBottom.x || point.x < squareLeftUp.x) return false;
 	if (point.y > squareRightBottom.y || point.y < squareLeftUp.y) return false;

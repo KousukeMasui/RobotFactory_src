@@ -33,7 +33,7 @@ void PriorityAttackAction::Update(float deltaTime)
 	m_orderUnits.clear();
 	for (auto unit : units)
 	{
-		if (!unit->IsMove()) m_orderUnits.push_back(unit);
+		if (!unit->Agent().IsMove()) m_orderUnits.push_back(unit);
 	}
 
 	m_shaft.Update(deltaTime);
@@ -55,7 +55,7 @@ float PriorityAttackAction::OnPriority()
 	for (auto unit : m_units)
 	{
 		if (unit->GetLift() != nullptr) continue;//物を持っている
-		if (unit->IsMove()) continue;//移動中
+		if (unit->Agent().IsMove()) continue;//移動中
 		if (unit->GetParam().NodeID() == (int)UnitNodeID::BATTLE) continue;//戦闘中
 		m_orderUnits.push_back(unit);
 	}
@@ -67,7 +67,7 @@ float PriorityAttackAction::OnPriority()
 	float status = 0.0f;
 	for (auto unit : m_orderUnits)
 	{
-		status += unit->GetStatus().hp + unit->GetStatus().attack;
+		status += unit->GetStatus().Status(UNIT_STATUS_ID::HP) + unit->GetStatus().Status(UNIT_STATUS_ID::ATK);
 	}
 	//工場のステータスの方が高い場合　小さい数値を返す
 	if (factoryDefence >= status) return -100000.0f;
@@ -104,7 +104,7 @@ FactoryPtr PriorityAttackAction::GetWeakFactory(float& power)
 		float status = 0.0f;
 		for (auto unit : units)
 		{
-			status += unit->GetStatus().hp + unit->GetStatus().attack;
+			status += unit->GetStatus().Status(UNIT_STATUS_ID::HP) + unit->GetStatus().Status(UNIT_STATUS_ID::ATK);
 		}
 		if (min >= status)
 		{

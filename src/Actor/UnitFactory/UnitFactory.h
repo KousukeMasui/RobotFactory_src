@@ -39,7 +39,6 @@ public:
 	bool IsCollide(const Sphere& other,HitInfo& hit) const;
 	bool IsCollide(const Capsule& caspule) const;
 	HitInfo IsCollide(const Line3D& line) const;
-	void Collide(Unit& other,HitInfo& hit);
 
 	//資源を置く等の範囲に入ったらtrue
 	bool IsCollide(const Unit& unit);
@@ -57,7 +56,7 @@ public:
 	void Create(const UnitStatus& status);
 
 	//ダメージ関数
-	void Damage(int attack, InfluenceID influence);
+	void Damage(float attack, InfluenceID influence);
 
 	//自分の周りのpointを返す
 	std::vector<Point2> GetPoints() const;

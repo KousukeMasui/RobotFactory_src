@@ -21,11 +21,12 @@ OrderLiftObjectState::~OrderLiftObjectState()
 
 void OrderLiftObjectState::Initialize()
 {
+	m_cursor->SetPosition(m_lift->Position());
 }
 
 void OrderLiftObjectState::Update(float deltaTime)
 {
-	m_cursor->Update(m_lift->Position(), deltaTime);
+	m_cursor->Update(deltaTime);
 }
 
 void OrderLiftObjectState::Draw() const
@@ -42,18 +43,13 @@ void OrderLiftObjectState::End()
 	{
 		if (factory->IsCollide(capsule))
 		{
-			//Œo˜H’Tõ‚µ‚Ä•Ô‚·
-			PathFinder f(m_world.GetFieldMap());
-			m_unit->Message((int)UnitMessageID::ROOT_VECTOR, 
-				&PathFind3DUtility::ToRoad(f.FindTarget(
-					PathFind3DUtility::ToNodePoint2(m_unit->Position(),f),
-					PathFind3DUtility::ToNodePoint2(m_lift->Position(),f)),f));
+			m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
+				m_lift->Position(), m_unit->Agent());
 			return;
 
 		}
 	}//“–‚½‚ç‚È‚¢ê‡’¼i‚³‚¹‚é
-
-	m_unit->Message((int)UnitMessageID::ROOT, &m_lift->Position());
+	m_unit->Agent().SetRoot(m_lift->Position());
 }
 
 int OrderLiftObjectState::Next() const

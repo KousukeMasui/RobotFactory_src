@@ -27,7 +27,6 @@ UnitFactory::UnitFactory(IWorld& world, InfluenceID influence, const MyVector3& 
 {
 	//周りのpointを計算
 	PointsSet();
-	//m_status.partsCount = 999;
 }
 UnitFactory::~UnitFactory()
 {
@@ -56,16 +55,6 @@ void UnitFactory::Draw() const
 	m_model.Draw();
 	m_heal.Draw();
 	m_autoAI.Draw();
-
-	//当たり判定の描画
-	//ShapeRenderer::Draw(m_param.m_box);
-	/*for (auto point : m_circlePoints)
-	{
-		MyVector3 center = PathFind3DUtility::ToPosition(point);
-		DrawCube3D(Converter::MyVector3ToVECTOR(center - MyVector3(PathFind3DUtility::size.x / 2.0f, 16.0f, PathFind3DUtility::size.y / 2.0f)),
-			Converter::MyVector3ToVECTOR(center + MyVector3(PathFind3DUtility::size.x / 2.0f, 16.0f, PathFind3DUtility::size.y / 2.0f)),
-			GetColor(255, 0, 0), GetColor(255, 0, 0), false);
-	}*/
 }
 
 //消えることがないのでfalseを返す
@@ -104,39 +93,6 @@ HitInfo UnitFactory::IsCollide(const Line3D & line) const
 	return m_param.m_box.IsCollide(line);
 }
 
-void UnitFactory::Collide(Unit & other, HitInfo & hit)
-{
-
-	//移動中でない場合
-	if (!other.IsMove()) return;
-	
-	//移動方向に工場がある場合
-	if (m_param.m_box.IsCollide(Ray(other.Position(), other.GetVelocity())).isHit)
-	{
-		//移動速度より近い(次のフレームで追い越す)場合
-		if (MyVector3::Distance(other.Target(), other.Position()) <= other.GetStatus().MoveSpeed() ||
-			IsCollide(Sphere(other.Target(), 1.0f), HitInfo())//工場を目的地としていた場合
-			)
-		{
-			//移動終了
-			other.RoadDelete();
-			return;
-		}
-
-		Ray ray(other.Position(), other.ToNextVelocity());
-		//次の目的地までの方向に工場がある場合
-		if (m_param.m_box.IsCollide(ray).isHit)
-		{
-			//経路探索
-			PathFinder f(m_world.GetFieldMap());
-			other.Message((int)UnitMessageID::ROOT_VECTOR, &PathFind3DUtility::ToRoad(f.FindTarget(
-				PathFind3DUtility::ToNodePoint2(other.Position(), f),
-				PathFind3DUtility::ToNodePoint2(other.Target(), f)), f));
-		}
-
-	}
-}
-
 bool UnitFactory::IsCollide(const Unit & unit)
 {
 	return VectorUtility::IsExistence<Point2>(GetPoints(), PathFind3DUtility::ToNodePoint2(unit.Position()));
@@ -144,18 +100,34 @@ bool UnitFactory::IsCollide(const Unit & unit)
 
 void UnitFactory::Collide(Unit & unit)
 {
-	//実際に衝突している場合 それ用の処理を行う
-	//if (IsCollide(unit.GetSphere(), HitInfo()))
-		Collide(unit, HitInfo());
-	return;
-	//これ以上工場に近づこうとしている場合、停止させる
-	auto points = PathFind3DUtility::ToNodePoint2(Line3D(unit.Position(), unit.Position() + unit.ToNextVelocity() * 100.0f));
-	for (auto p : points) {
-		if (VectorUtility::IsExistence<Point2>(m_myPoints, p))
+	//移動中でない場合
+	if (!unit.Agent().IsMove()) return;
+
+	//移動方向に工場がある場合
+	if (m_param.m_box.IsCollide(Ray(unit.Position(), unit.Agent().ToNextVelocity())).isHit)
+	{
+		//移動速度より近い(次のフレームで追い越す)場合
+		if (MyVector3::Distance(unit.Agent().EndPoint(), unit.Position()) <= unit.GetStatus().Status(UNIT_STATUS_ID::SPD) ||
+			IsCollide(Sphere(unit.Agent().EndPoint(), 1.0f), HitInfo())//工場を目的地としていた場合
+			)
 		{
-			unit.RoadDelete();
-			break;
+			//移動終了
+			unit.Agent().Delete();
+			return;
 		}
+
+		//エネミーの場合、経路探索で動いているので新しく経路を与えない
+		if (unit.GetInfluence() != InfluenceID::PLAYER) return;
+		//重なった場合などに毎フレーム呼び出されてしまうので
+		Ray ray(unit.Position(), unit.Agent().ToNextVelocity());
+		//次の目的地までの方向に工場がある場合
+		if (m_param.m_box.IsCollide(ray).isHit)
+		{
+			//経路探索
+			m_world.GetGameManager().GetMetaAI().GetFind().PathFind(
+				m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(), unit.Agent().EndPoint(), unit.Agent());
+		}
+
 	}
 }
 
@@ -176,7 +148,7 @@ FactoryStatus & UnitFactory::Status()
 
 void UnitFactory::StatusUp(FactoryStatusID id)
 {
-	m_status.StatusUp(id);
+	m_status.StatusUp(id, &m_world.GetGameManager());
 	//回復関連の場合
 	if (id == FactoryStatusID::HEAL_POWER || id == FactoryStatusID::HEAL_RANGE)
 	{
@@ -204,7 +176,7 @@ void UnitFactory::Create(const UnitStatus & status)
 	});
 }
 
-void UnitFactory::Damage(int attack, InfluenceID influence)
+void UnitFactory::Damage(float attack, InfluenceID influence)
 {
 	m_status.hp -= attack;
 	if (m_status.hp <= 0.0f)
@@ -257,27 +229,27 @@ void UnitFactory::PointsSet()
 	int left = 0;
 	int top = 0;
 	int bottom = 0;
-
+	PathFinder f = m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder();
 	//center　+x,0が0になるまで回す
 	do
 	{
 		right++;
-	} while (m_world.GetFieldMap()[m_point + Point2(right, 0)] == 2);
+	} while (!f[m_point + Point2(right, 0)]->walkable());
 	do
 	{
 		left--;
-	} while (m_world.GetFieldMap()[m_point + Point2(left, 0)] == 2);
+	} while (!f[m_point + Point2(left, 0)]->walkable());
 	do
 	{
 		top--;
-	} while (m_world.GetFieldMap()[m_point + Point2(0, top)] == 2);
+	} while (!f[m_point + Point2(0, top)]->walkable());
 	do
 	{
 		bottom++;
-	} while (m_world.GetFieldMap()[m_point + Point2(0, bottom)] == 2);
+	} while (!f[m_point + Point2(0, bottom)]->walkable());
 	Point2 rightDown = Point2(m_point.x + right, m_point.y + bottom);
 	Point2 leftUp = Point2(m_point.x + left, m_point.y + top);//
-																	  //										調整
+ //										調整
 	int weight = rightDown.x - leftUp.x + 1;
 	int height = rightDown.y - leftUp.y + 1;
 
@@ -307,10 +279,10 @@ void UnitFactory::NonInfluenceUpdate(float deltaTime)
 	//PathFinder f(m_world.GetFieldMap());
 	//自分の周りにユニットがいたらその所属になる
 	m_world.GetGameManager().GetUnitManager().Function([&](const UnitPtr& unit) {
+		if (unit->IsDead()) return;
 		Point2 point = PathFind3DUtility::ToNodePoint2(unit->Position());
 		
 		if(VectorUtility::IsExistence<Point2>(GetPoints(), point))
-		//if(m_param.m_box.IsCollide(unit->GetSphere()).isHit)
 		{
 			ChangeInfluence(unit->GetInfluence());
 		}

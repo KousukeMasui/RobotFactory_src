@@ -28,7 +28,10 @@ FactoryUI::~FactoryUI()
 }
 void FactoryUI::Update(float deltaTime)
 {
+	//変数の初期化
+	m_deleteFunc = []() {};
 	m_manager.Update(deltaTime);
+	m_deleteFunc();//削除実行
 }
 void FactoryUI::StatusGaugeDraw() const
 {
@@ -175,7 +178,9 @@ void FactoryUI::Initialize()
 		{
 			if (Mouse::GetInstance().IsPressUp(MouseCommand::LEFT))
 			{
-				StatusCommand();
+				m_deleteFunc = [&]() {
+					StatusCommand();
+				};
 			}
 		});
 		auto same = std::make_shared<SameTime>(2, onMouseColor, click);
@@ -183,6 +188,7 @@ void FactoryUI::Initialize()
 
 		m_sprites[(int)TEXTURE_ID::UNIT] = status;
 	}
+
 	//回復ステータス画像
 	{
 		SpritePtr power, range;
@@ -209,7 +215,9 @@ void FactoryUI::Initialize()
 		{
 			if (Mouse::GetInstance().IsPressUp(MouseCommand::LEFT))
 			{
-				HealCommand();
+				m_deleteFunc = [&](){
+				HealCommand(); 
+				};
 			}
 		});
 		auto same = std::make_shared<SameTime>(2, onMouseColor, click);
@@ -262,9 +270,13 @@ void FactoryUI::Initialize()
 			if (Mouse::GetInstance().IsPressUp(MouseCommand::LEFT))
 			{
 				if (m_command != DrawCommand::COMMAND_AUTO)
+					m_deleteFunc = [&]() {
 					FirstCommand();
+				};
 				else
+					m_deleteFunc = [&]() {
 					HealCommand();
+				};
 			}
 
 		});

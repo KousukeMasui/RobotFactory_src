@@ -25,13 +25,13 @@ bool MoveNode::Branch()
 	//ˆÚ“®‰Â”\A‚©‚Â“¹‚ª“o˜^‚³‚ê‚Ä‚¢‚½‚ç
 	return m_unit.GetLift() == nullptr &&
 		m_unit.GetModel().GetAnimationID()!= UnitAnimationID::LIFT_UP &&
-		(m_unit.IsMove());
+		(m_unit.Agent().IsMove());
 }
 
 void MoveNode::OnUpdate(float deltaTime)
 {
-	m_unit.LerpToVelocity(m_unit.GetVelocity());//‰ñ“]‚³‚¹‚é
-	m_unit.Move(m_unit.GetVelocity() * m_unit.GetStatus().MoveSpeed());
+	m_unit.Agent().RotateToNext(deltaTime);
+	m_unit.Move(m_unit.Agent().ToNextVelocity() * m_unit.GetStatus().Status(UNIT_STATUS_ID::SPD));
 }
 
 bool MoveNode::SetIsEnd()

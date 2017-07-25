@@ -30,7 +30,7 @@ void PriorityToFactory::Initialize()
 
 	m_cursorManager.SetState((int)CursorStateID::TO_UNIT);
 
-	m_world.GetMetaAI().Overlap().Add(&*m_targetFactory);
+	m_world.GetGameManager().GetMetaAI().Overlap().Add(&*m_targetFactory);
 }
 
 void PriorityToFactory::Update(float deltaTime)
@@ -41,14 +41,14 @@ void PriorityToFactory::Update(float deltaTime)
 		return;
 	}
 	m_cursorManager.Update(deltaTime);
-	m_isEnd = m_orderUnit->IsMove();
+	m_isEnd = m_orderUnit->Agent().IsMove() || m_orderUnit->Agent().IsFindWait();
 }
 
 void PriorityToFactory::End()
 {
 	if(m_isFactorySearch) m_targetFactory = nullptr;
 	m_cursorManager.Initialize();
-	//m_world.GetMetaAI().Overlap().Remove(&*m_targetFactory);
+	//m_world.GetGameManager().GetMetaAI().Overlap().Remove(&*m_targetFactory);
 }
 
 void PriorityToFactory::Draw() const
@@ -77,8 +77,8 @@ float PriorityToFactory::OnPriority()
 			if (IsDisablePriority(u2)) return u1;
 		}
 		
-		if (m_world.GetMetaAI().Distance().Distance(*m_cursor, *u1) + d1 <=
-			m_world.GetMetaAI().Distance().Distance(*m_cursor, *u2) + d2)
+		if (m_world.GetGameManager().GetMetaAI().Distance().Distance(*m_cursor, *u1) + d1 <=
+			m_world.GetGameManager().GetMetaAI().Distance().Distance(*m_cursor, *u2) + d2)
 			return u1;
 		return u2;
 	});
@@ -86,8 +86,8 @@ float PriorityToFactory::OnPriority()
 	if (m_orderUnit == nullptr || IsDisablePriority(m_orderUnit)) return -1.0f;
 	
 	//ƒ†ƒjƒbƒg‚Ü‚Å‚Ì‹——£ + Hê‚Ü‚Å‚Ì‹——£
-	return m_distancePriority - (m_world.GetMetaAI().Distance().Distance(*m_orderUnit, m_targetFactory) +
-		m_world.GetMetaAI().Distance().Distance(*m_cursor, *m_orderUnit));
+	return m_distancePriority - (m_world.GetGameManager().GetMetaAI().Distance().Distance(*m_orderUnit, m_targetFactory) +
+		m_world.GetGameManager().GetMetaAI().Distance().Distance(*m_cursor, *m_orderUnit));
 }
 
 UnitPtrs PriorityToFactory::GetUnits()
@@ -97,7 +97,7 @@ UnitPtrs PriorityToFactory::GetUnits()
 	UnitPtrs result;
 	for(auto unit : m_units)
 	{
-		if (!unit->IsMove())
+		if (!unit->Agent().IsMove() && !unit->Agent().IsFindWait())
 			result.push_back(unit);
 	}
 	return result;
@@ -123,12 +123,11 @@ float PriorityToFactory::NearFactoryDistance(const UnitPtr & unit)
 	float min = FLT_MAX;
 	auto myFactorys = m_world.GetGameManager().GetFactoryManager().GetVector(m_influenceID);
 	clsDx();
-	for (int i = 0; i < myFactorys.size();i++)
-	//for (auto factory : myFactorys)
+	for (unsigned int i = 0; i < myFactorys.size();i++)
 	{
 		//Šù‚É’N‚©‚ª‘_‚Á‚Ä‚¢‚éê‡false
-		if (m_isContainsCheck && m_world.GetMetaAI().Overlap().IsContains(&*myFactorys[i])) continue;
-		float distance = m_world.GetMetaAI().Distance().Distance(*unit, &*myFactorys[i]);
+		if (m_isContainsCheck && m_world.GetGameManager().GetMetaAI().Overlap().IsContains(&*myFactorys[i])) continue;
+		float distance = m_world.GetGameManager().GetMetaAI().Distance().Distance(*unit, &*myFactorys[i]);
 		if (min >= distance)
 		{
 			min = distance;

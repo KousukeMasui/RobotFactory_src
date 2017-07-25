@@ -15,9 +15,14 @@ UnitPtr MouseSelect::Update(float deltaTime)
 {
 	auto line = Mouse::GetInstance().ToWorldLine();
 	HitInfo hit;
-	m_cursor.Update(CursorPosition(line, hit), deltaTime);
+	m_cursor.SetPosition(CursorPosition(line, hit));
+	m_cursor.Update(deltaTime);
 
-	return m_cursor.IsCollide(m_world, InfluenceID::PLAYER);
+	auto unit = m_world.GetGameManager().GetMetaAI().Distance().NearUnit(m_cursor,
+		m_world.GetGameManager().GetUnitManager().GetVector(InfluenceID::PLAYER));
+	if(m_cursor.IsCollide(unit->GetSphere()))
+		return unit;
+	return nullptr;
 }
 
 SelectCursor & MouseSelect::GetCursor()

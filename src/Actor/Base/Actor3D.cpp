@@ -92,21 +92,6 @@ void Actor3D::SetPosition(MyVector3 sPos)
 	m_position = sPos;
 }
 
-MyMatrix4 Actor3D::GetRotate() const
-{
-	return m_rotate;
-}
-
-std::map<Shape2DEnum, std::vector<std::shared_ptr<Shape2D>>> Actor3D::GetShapes2D() const
-{
-	return m_shapes2DMap;
-}
-
-std::map<Shape3DEnum, std::vector<std::shared_ptr<Shape3D>>> Actor3D::GetShapes3D() const
-{
-	return m_shapes3DMap;
-}
-
 //•ÏŠ·s—ñ‚ğ•Ô‚·
 MyMatrix4 Actor3D::GetPose() const
 {

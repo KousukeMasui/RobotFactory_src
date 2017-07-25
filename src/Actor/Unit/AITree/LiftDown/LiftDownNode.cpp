@@ -32,7 +32,7 @@ void LiftDownNode::End()
 {
 	m_unit.GetLift()->LiftEnd();
 	//今回はエネミーのみ登録なのでここに直打ちする
-	m_world.GetMetaAI().Overlap().Remove(m_unit.GetLift());
+	m_world.GetGameManager().GetMetaAI().Overlap().Remove(m_unit.GetLift());
 	//近くに工場がある場合
 	if (m_factory != nullptr)
 	{
@@ -61,9 +61,9 @@ bool LiftDownNode::Branch()
 	if (m_factory != nullptr) return true;
 
 	//違う勢力のユニットの中で一番近いユニットを取得
-	auto nearEnemy = m_world.GetMetaAI().Distance().GetNearUnitOtherInfluence(m_unit, [](const Unit& unit) {return !unit.IsDead(); });
+	auto nearEnemy = m_world.GetGameManager().GetMetaAI().Distance().GetNearUnitOtherInfluence(m_unit, [](const Unit& unit) {return !unit.IsDead(); });
 	//一定距離以内なら
-	return (nearEnemy != nullptr && m_world.GetMetaAI().Distance().Distance(*nearEnemy, m_unit) <= BattleDistance);
+	return (nearEnemy != nullptr && m_world.GetGameManager().GetMetaAI().Distance().Distance(*nearEnemy, m_unit) <= BattleDistance);
 }
 
 void LiftDownNode::OnUpdate(float deltaTime)

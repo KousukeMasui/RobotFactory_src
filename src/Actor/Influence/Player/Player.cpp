@@ -24,7 +24,7 @@ Player::Player(IWorld & world):
 	m_isAutoSelect(false),
 	m_mouseSelect(world)
 {
-	m_stateManager.Add((int)PlayerStateID::SELECT, std::make_shared<PlayerSelectState>(world,this));
+	m_stateManager.Add((int)PlayerStateID::SELECT, std::make_shared<PlayerSelectState>(world,this,&m_onMouseUnit));
 	m_stateManager.Add((int)PlayerStateID::ORDER, std::make_shared<PlayerOrderState>(world,this,&m_selectedUnit));
 	m_stateManager.SetState((int)PlayerStateID::SELECT);
 }
@@ -54,7 +54,11 @@ void Player::Select(const UnitPtr & unit)
 {
 	m_selectedUnit = m_onMouseUnit;
 	//–½—ß‘Ò‚¿‚É‚·‚é
-	m_selectedUnit->RoadDelete();
+	m_selectedUnit->Agent().Delete();
+}
+MouseSelect & Player::GetMouseSelect()
+{
+	return m_mouseSelect;
 }
 SelectCursor & Player::GetCursor()
 {
@@ -82,11 +86,11 @@ void Player::OnMouseUnitStatusDraw()
 	};
 
 	//HP‚Ì•`‰æ
-	gaugeDraw(m_onMouseUnit->GetStatus().factoryMaxHP, MyVector2(135,Screen::SCREEN_SIZE.y - 150.0f));
+	gaugeDraw(m_onMouseUnit->GetStatus().Level(UNIT_STATUS_ID::HP), MyVector2(135,Screen::SCREEN_SIZE.y - 150.0f));
 	//UŒ‚—Í‚Ì•`‰æ
-	gaugeDraw(m_onMouseUnit->GetStatus().attack, MyVector2(135, Screen::SCREEN_SIZE.y - 100.0f));
+	gaugeDraw(m_onMouseUnit->GetStatus().Level(UNIT_STATUS_ID::ATK), MyVector2(135, Screen::SCREEN_SIZE.y - 100.0f));
 	//‘¬“x‚Ì•`‰æ
-	gaugeDraw(m_onMouseUnit->GetStatus().speed, MyVector2(135, Screen::SCREEN_SIZE.y - 50.0f));
+	gaugeDraw(m_onMouseUnit->GetStatus().Level(UNIT_STATUS_ID::SPD), MyVector2(135, Screen::SCREEN_SIZE.y - 50.0f));
 }
 
 void Player::SelectUnitDraw() const

@@ -41,10 +41,11 @@ bool LiftUpNode::Branch()
 		return !m_unit.GetLift()->IsLiftEnd();
 	}
 
-	auto lift = m_world.GetMetaAI().Distance().GetNearLift(m_unit);
+	auto lift = m_world.GetGameManager().GetMetaAI().Distance().GetNearLift(m_unit);
 	if (lift == nullptr ||lift->IsLiftStart()|| lift->IsDelete()) return false;
 
-	if (m_world.GetMetaAI().Distance().Distance(*lift,m_unit) <= 20.0f)
+	if (m_world.GetGameManager().GetMetaAI().Distance().Distance(*lift,m_unit) <=
+		m_world.GetGameManager().GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_LIFT_RANGE, 1))
 	{
 		m_unit.Message((int)UnitMessageID::LIFT, &lift);
 		m_unit.GetLift()->LiftStart();
@@ -55,10 +56,10 @@ bool LiftUpNode::Branch()
 
 void LiftUpNode::OnUpdate(float deltaTime)
 {
-	m_unit.RoadDelete();
+	m_unit.Agent().Delete();
 	MyVector3 v = m_unit.GetLift()->Position() - m_unit.Position();
 	v.y = 0.0f;
-	if(m_unit.LerpToVelocity(v))
+	if(m_unit.RotateVelocity(v,deltaTime))
 		m_unit.GetLift()->LiftUp(m_unit);//ユニットの持っている物体にユニット自体を渡す
 }
 

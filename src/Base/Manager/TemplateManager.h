@@ -103,6 +103,7 @@ public:
 	std::vector<std::shared_ptr<Type>> GetOther(ID id)
 	{
 		std::vector<std::shared_ptr<Type>> result;
+		if (m_types.empty()) return result;
 		for (auto itr = m_types.begin(); itr != m_types.end(); ++itr)
 		{
 			if (itr->first != id)

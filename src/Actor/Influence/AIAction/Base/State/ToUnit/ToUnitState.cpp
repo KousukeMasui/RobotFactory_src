@@ -17,7 +17,8 @@ void ToUnitState::Initialize()
 
 void ToUnitState::Update(float deltaTime)
 {
-	m_cursor->Update(m_unit->Position(), deltaTime);
+	m_cursor->SetPosition(m_unit->Position());
+	m_cursor->Update(deltaTime);
 }
 
 void ToUnitState::Draw() const

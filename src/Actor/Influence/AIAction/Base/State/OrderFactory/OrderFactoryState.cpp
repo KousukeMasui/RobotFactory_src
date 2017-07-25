@@ -26,30 +26,13 @@ OrderFactoryState::~OrderFactoryState()
 void OrderFactoryState::Initialize()
 {
 	m_root.clear();
-	MyVector3 target = m_factory->GetParam().Position();
-
-	//Œo˜H’Tõ
-	FindRoot();
-	//^‚Á‚·‚®i‚ñ‚¾ê‡AHê‚É‚Ô‚Â‚©‚é‚©”»’è
-	//for (auto factory : factorys)
-	//{
-	//	m_isStraight = true;
-	//	if (factory == m_factory) continue;//–Ú“I‚ÌHê‚ÍœŠO
-
-	//	if (factory->IsCollide(capsule))
-	//	{
-	//		m_isStraight = false;
-	//		break;
-	//	}
-	//}
-
-	m_target = target;
+	m_cursor->SetPosition(m_factory->GetParam().Position());
 	
 }
 
 void OrderFactoryState::Update(float deltaTime)
 {
-	m_cursor->Update(m_target, deltaTime);
+	m_cursor->Update(deltaTime);
 }
 
 void OrderFactoryState::Draw() const
@@ -58,10 +41,17 @@ void OrderFactoryState::Draw() const
 
 void OrderFactoryState::End()
 {
-	if (m_root.empty())
-		m_unit->Message((int)UnitMessageID::ROOT, &m_cursor->Position());
-	else
-		m_unit->Message((int)UnitMessageID::ROOT_VECTOR, &m_root);
+	//Œo˜H’Tõ
+	//FindRoot();
+
+	PathFinder f = m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder();
+	//auto nonePoints = m_world.GetGameManager().GetMetaAI().GetUnitPoints(*m_unit);
+	//for (auto p : nonePoints)
+	//	f[p]->SetWalkable(false);//ˆÚ“®•s‰Â‚Æ‚µ‚Äˆµ‚¤
+
+	auto ps = m_factory->GetPoints();// VectorUtility::NonObjects<Point2>(m_factory->GetPoints(), nonePoints);
+	
+	m_world.GetGameManager().GetMetaAI().GetFind().PathFind(f, ps, m_unit->Agent());
 }
 
 int OrderFactoryState::Next() const
@@ -72,16 +62,4 @@ int OrderFactoryState::Next() const
 bool OrderFactoryState::IsEnd() const
 {
 	return m_cursor->IsCollide(m_factory);
-}
-
-void OrderFactoryState::FindRoot()
-{
-	PathFinder f(m_world.GetFieldMap());
-	auto nonePoints = m_world.GetMetaAI().GetUnitPoints(*m_unit);
-	for (auto p : nonePoints)
-		f[p]->SetWalkable(false);//ˆÚ“®•s‰Â‚Æ‚µ‚Äˆµ‚¤
-	auto ps = VectorUtility::NonObjects<Point2>(m_factory->GetPoints(), nonePoints);
-
-	f.AddTargets(ps);
-	m_root =  PathFind3DUtility::ToRoad(f.FindMultiTarget(PathFind3DUtility::ToNodePoint2(m_unit->Position(),f)),f);
 }

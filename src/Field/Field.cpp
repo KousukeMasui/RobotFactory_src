@@ -4,7 +4,6 @@
 #include"Math/Collision/Model/ModelCollision.h"
 #include"Math/Matrix/MyMatrix4.h"
 #include"Math/Converter.h"
-#include"Input/Input.h"
 Field::Field() :
 	m_groundModel(MODEL_ID::GROUND,true,MyMatrix4::Scale(10.0f, 1.0f, 10.0f).SetPosition(MyVector3(800,0,800))),
 	m_skyModel(MODEL_ID::SKYDOME,true,MyMatrix4::Scale(10.0f,10.0f,10.0f)),

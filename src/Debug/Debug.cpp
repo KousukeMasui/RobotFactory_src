@@ -3,6 +3,7 @@
 #include"Actor\Camera\FollowCamera\FollowCamera.h"
 #include"World/World.h"
 #include"Base/VectorUtility/VectorUtility.h"
+#include"Input/InputManager.h"
 Debug::Debug(World & world, LerpCursor& cursor):
 	m_world(world),
 	m_isDebug(false),
@@ -39,7 +40,7 @@ void Debug::Draw() const
 	//printfDx("左右キーでユニットとカーソルの変更\n");
 	//printfDx("上下キーでユニット変更\n\n\n");
 	//移動中のオブジェクトのみ目的地を描画
-	if (m_targetUnit->IsMove())
+	if (m_targetUnit->Agent().IsMove())
 	{
 		//m_unitTarget.Draw(m_targetUnit->GetParam().roadPositions.front() + MyVector3(0, 2, 0), MyVector3(13, 1, 13), 0.0f);
 	}
@@ -59,7 +60,7 @@ void Debug::End()
 
 void Debug::ChangeDebug()
 {
-	if (Input::GetInstance().IsKeyBoadDown(KEY_INPUT_D))
+	if(InputManager::GetInstance().GetKeyBoard().IsKeyBoadDown(KEY_INPUT_D))
 	{
 		//bool反転
 		m_isDebug = !m_isDebug;
@@ -86,11 +87,11 @@ void Debug::ChangeUnit()
 	int prevIndex = index;
 	unsigned int max = m_world.GetGameManager().GetUnitManager().GetVector(InfluenceID::ENEMY).size();
 	//ユニットを変更する
-	if (Input::GetInstance().IsKeyBoadDown(KEY_INPUT_UP))
+	if (InputManager::GetInstance().GetKeyBoard().IsKeyBoadDown(KEY_INPUT_UP))
 	{
 		index += max - 1;
 	}
-	else if (Input::GetInstance().IsKeyBoadDown(KEY_INPUT_DOWN))
+	else if (InputManager::GetInstance().GetKeyBoard().IsKeyBoadDown(KEY_INPUT_DOWN))
 	{
 		index++;
 	}
@@ -103,7 +104,7 @@ void Debug::ChangeUnit()
 
 void Debug::CameraTargetChange()
 {
-	if (!Input::GetInstance().IsKeyBoadDown(KEY_INPUT_LEFT) && !Input::GetInstance().IsKeyBoadDown(KEY_INPUT_RIGHT)) return;
+	if (!InputManager::GetInstance().GetKeyBoard().IsKeyBoadDown(KEY_INPUT_LEFT) && !InputManager::GetInstance().GetKeyBoard().IsKeyBoadDown(KEY_INPUT_RIGHT)) return;
 	if (m_target == CameraTarget::UNIT)
 	{
 		m_target = CameraTarget::CURSOR;

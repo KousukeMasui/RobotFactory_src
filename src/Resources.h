@@ -26,6 +26,7 @@ enum class MODEL_ID
 	FACTORY,
 	CLAMP_FIELD,
 	PARTS,
+	ROOT,//Œo˜H•`‰æ
 	MAX,
 };
 

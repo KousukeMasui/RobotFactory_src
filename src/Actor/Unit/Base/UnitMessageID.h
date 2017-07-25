@@ -2,9 +2,8 @@
 
 enum class UnitMessageID
 {
-	ROOT,			//経路を与える　単一の目的地
-	ROOT_VECTOR,	//経路を与える　配列
 	DAMAGE,			//ダメージ処理
+	TO_UNIT,		//ユニット追従
 	HEAL,			//回復
 	LIFT,			//持ち物設定メッセージ
 };

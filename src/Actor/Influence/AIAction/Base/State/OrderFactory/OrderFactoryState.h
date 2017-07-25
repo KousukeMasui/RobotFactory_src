@@ -15,16 +15,11 @@ public:
 	void End() override;
 	int Next() const override;
 	bool IsEnd() const override;
-
-private:
-	void FindRoot();
 private:
 	IWorld& m_world;
 	UnitFactory* m_factory;
 	//íºêiÇ∑ÇÈÇ©
 	bool m_isStraight;
-	//ñ⁄ìIín
-	MyVector3 m_target;
 	std::vector<Point2> m_root;
 	InfluenceID m_influence;
 };

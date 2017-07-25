@@ -23,7 +23,7 @@ public:
 	UnitPtr GetNearUnitOtherInfluence(const Unit& unit,const std::function<bool(const Unit& unit)>& searchFunc = nullptr);
 	UnitPtr GetNearUnitInfluence(const Unit& unit, const std::function<bool(const Unit& unit)>& searchFunc = nullptr);
 	//一番近いユニットを取得
-	UnitPtr GetNearUnit(const Unit& unit);
+	UnitPtr GetNearUnit(const Object& obj);
 
 	//一番近い持てるオブジェクトを返す
 	LiftObjectPtr GetNearLift(const Unit& unit,const std::function<bool(const LiftObject& lift)>& searchFunc = nullptr);
@@ -31,9 +31,9 @@ public:
 	float Distance(const Object& o1, const Object& o2);
 	//距離を返す
 	float Distance(const LiftObject& l, UnitFactory* f);
-private:
 	//一番近いユニットを返す
-	UnitPtr NearUnit(const Unit& unit, const UnitPtrs& units);
+	UnitPtr NearUnit(const Object& obj, const UnitPtrs& units);
+private:
 	//一番近い持てるオブジェクトを返す
 	LiftObjectPtr NearLeft(const Unit& unit,const LiftObjects& lifts);
 	//距離計算

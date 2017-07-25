@@ -6,6 +6,8 @@
 #include"Actor\Influence\InfluenceID.h"
 #include"FactoryManager.h"
 #include"UnitManager.h"
+#include"CSVReader/CSVData.h"
+#include"Actor/Influence/AIAction/MetaAI/MetaAI.h"
 class Influence;
 class Hp_Draw;
 typedef TemplateManager<int, Parts, MyVector3> PartsManager;
@@ -35,6 +37,9 @@ public:
 	void Update(float deltaTime);
 	//描画
 	void Draw() const;
+	//csvデータ引き渡し
+	CSVData& GetCSV();
+	MetaAI& GetMetaAI();
 private:
 	void UnitUpdate(float deltaTime);
 private:
@@ -44,4 +49,8 @@ private:
 	//勢力管理クラス
 	InfluenceManager m_influenceManager;
 	std::shared_ptr<Hp_Draw> m_hp;
+	//csv情報保存クラス
+	CSVData m_csvData;
+	//メタAI
+	MetaAI m_metaAI;
 };

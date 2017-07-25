@@ -43,7 +43,7 @@ bool DeadNode::Branch()
 void DeadNode::OnUpdate(float deltaTime)
 {	
 	//Œo˜H‚ğíœ
-	m_unit.RoadDelete();
+	m_unit.Agent().Delete();
 }
 
 bool DeadNode::SetIsEnd()

@@ -18,6 +18,10 @@ public:
 	MyMatrix4 Rotate() const;
 	void Rotate(const MyMatrix4& rotate);
 	MyMatrix4 GetPose() const;
+
+	//回転補間
+	bool SlerpRotate(const MyVector3& velocity,float deltaTime);
+
 	//メッセージ関数
 	virtual void Message(int messageID, void* data) {};
 protected:

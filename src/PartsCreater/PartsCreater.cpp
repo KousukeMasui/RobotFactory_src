@@ -45,7 +45,9 @@ void PartsCreater::Create()
 	{
 		position = MyMath::Random(MinCreatePosition, MaxCreatePosition);
 		point = PathFind3DUtility::ToNodePoint2(position);
-	} while (MyVector3::Distance(position, m_prevCreatePosition) <= 20.0f || m_world->GetFieldMap()[point] != 0 || VectorUtility::IsExistence<Point2>(points, point));
+	} while (MyVector3::Distance(position, m_prevCreatePosition) <= 20.0f ||
+		!m_world->GetGameManager().GetMetaAI().GetFind().CreatePathFinder()[point]->walkable()|| 
+		VectorUtility::IsExistence<Point2>(points, point));
 
 	//¶¬
 	m_world->GetGameManager().AddParts(std::make_shared<Parts>(*m_world, position));

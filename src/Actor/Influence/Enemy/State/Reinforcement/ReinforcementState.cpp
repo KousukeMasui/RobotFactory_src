@@ -69,24 +69,7 @@ int ReinforcementState::Next()const
 
 bool ReinforcementState::IsEnd()const
 {
-	//現在のユニットのステータスとプレイヤーのステータスで比較して評価
-	UnitStatus my(0, 0, 0, 0, 0);
-	UnitStatus player(0, 0, 0, 0, 0);
-	m_world.GetGameManager().GetUnitManager().Function(
-		[&](UnitPtr unit)
-	{
-		//死んでいるユニットを除外
-		if (unit->GetParam().NodeID() == (int)UnitNodeID::DEAD) return;
-
-		if (unit->GetInfluence() == InfluenceID::PLAYER)
-			player += unit->GetStatus();
-		else
-			my + unit->GetStatus();
-	});
-
-	float myDef = my.hp / player.attack;
-	float playerDef = player.hp / my.attack;
-	return  false;// myDef > playerDef;
+	return  false;
 }
 
 void ReinforcementState::PowerUp()

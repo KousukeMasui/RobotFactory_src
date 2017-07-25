@@ -1,7 +1,6 @@
 #include"TitleScene.h"
 
 #include"../Base/Scene.h"
-#include"Input/Input.h"
 #include"UI/UIAction/Link/Link.h"
 #include"UI/UIAction/SameTime/SameTime.h"
 #include"Loader\Loader.h"

@@ -17,9 +17,10 @@ FactoryStatus::FactoryStatus(const std::function<void(const UnitStatus&status)>&
 }
 //生成時のステータスにして返す
 
-UnitStatus FactoryStatus::CreateStatus() const
+UnitStatus FactoryStatus::CreateStatus(GameManager* manager) const
 {
-	return UnitStatus(status.at(FactoryStatusID::UNIT_HP), status.at(FactoryStatusID::UNIT_HP) * 10.0f, status.at(FactoryStatusID::UNIT_ATK), status.at(FactoryStatusID::UNIT_SPD), 10.0f);
+	return UnitStatus(status.at(FactoryStatusID::UNIT_HP)
+		,status.at(FactoryStatusID::UNIT_ATK), status.at(FactoryStatusID::UNIT_SPD), 10.0f, manager);
 }
 
 int FactoryStatus::CreatePartsCount() const
@@ -42,7 +43,7 @@ bool FactoryStatus::IsStatusUp(FactoryStatusID status)
 		return this->status[status] < 20;
 }
 
-void FactoryStatus::StatusUp(FactoryStatusID status)
+void FactoryStatus::StatusUp(FactoryStatusID status, GameManager* manager)
 {
 	partsCount -= this->status[status];
 	if (status != FactoryStatusID::CREATE)//ステータスを上げる
@@ -53,6 +54,6 @@ void FactoryStatus::StatusUp(FactoryStatusID status)
 	}
 	else//生成を行う
 	{
-		createFunc(CreateStatus());
+		createFunc(CreateStatus(manager));
 	}
 }

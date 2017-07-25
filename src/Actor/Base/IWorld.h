@@ -16,13 +16,11 @@ enum class EventMessage;
 class CommandUI;
 class GameManager;
 class UnitFactory;
-class FieldMap;
 class UIManager;
 class Effect3D;
 enum class EffectID;
 
 class BillBoardManager;
-class MetaAI;
 enum class CameraMode;
 //ワールド抽象インターフェース
 class IWorld
@@ -45,12 +43,10 @@ public:
 
 	virtual void Command(const FactoryPtr& facotry = nullptr) = 0;
 	virtual FactoryPtr GetCommandFactory() const = 0;
-	virtual FieldMap& GetFieldMap() = 0;
 
 	virtual std::shared_ptr<Effect3D> CreateEffect(EffectID effect) = 0;
 
 	virtual BillBoardManager& GetBillBoardManager() =0;
-	virtual MetaAI& GetMetaAI() = 0;
 	virtual void AddCamera(CameraMode mode, const std::shared_ptr<Camera>& camera) = 0;
 };
 

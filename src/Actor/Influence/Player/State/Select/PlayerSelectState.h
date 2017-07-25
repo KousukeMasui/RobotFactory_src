@@ -6,7 +6,7 @@ class IWorld;
 class PlayerSelectState : public IState
 {
 public:
-	PlayerSelectState(IWorld& world,Player* player);
+	PlayerSelectState(IWorld& world,Player* player,UnitPtr* unit);
 	~PlayerSelectState();
 	void Initialize() override;
 	void Update(float deltaTime) override;
@@ -17,6 +17,6 @@ public:
 private:
 	IWorld& m_world;
 	Player* m_player;
-
+	UnitPtr* m_unit;
 	bool m_isEnd;
 };

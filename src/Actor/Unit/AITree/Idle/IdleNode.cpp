@@ -40,7 +40,7 @@ bool IdleNode::Branch()
 
 void IdleNode::OnUpdate(float deltaTime)
 {
-	m_unit.RoadDelete();
+	m_unit.Agent().Delete();
 }
 
 bool IdleNode::SetIsEnd()

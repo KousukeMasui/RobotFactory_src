@@ -19,6 +19,7 @@ void MetaAI::Start(GameManager* manager)
 void MetaAI::Update()
 {
 	m_distance.Clear();
+	m_rootFind.Update();
 }
 
 std::vector<Point2> MetaAI::GetUnitPoints(const Unit & unit)
@@ -28,18 +29,18 @@ std::vector<Point2> MetaAI::GetUnitPoints(const Unit & unit)
 		return !u.IsDead() && &u != &unit;
 	});
 	std::vector<Point2> result;
-	for (auto unit : units)
+	for (auto u : units)
 	{
 		//ˆÚ“®’†‚Ìê‡
-		if (unit->IsMove())
+		if (u->Agent().IsMove())
 		{
 			//–Ú“I’n‚ð•Û‘¶
-			result.push_back(PathFind3DUtility::ToNodePoint2(unit->Target()));
+			result.push_back(PathFind3DUtility::ToNodePoint2(u->Agent().EndPoint()));
 		}
 		else
 		{
 			//Œ»Ý‚ÌˆÊ’u‚ð•Û‘¶
-			result.push_back(PathFind3DUtility::ToNodePoint2(unit->Position()));
+			result.push_back(PathFind3DUtility::ToNodePoint2(u->Position()));
 		}
 	}
 	return result;
@@ -53,4 +54,9 @@ MetaDistance & MetaAI::Distance()
 OverlapData & MetaAI::Overlap()
 {
 	return m_overlap;
+}
+
+RootFind & MetaAI::GetFind()
+{
+	return m_rootFind;
 }

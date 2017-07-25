@@ -1,6 +1,5 @@
 #include "Effect3D.h"
 #include"EffekseerForDXLib.h"
-#include"Input\Input.h"
 Effect3D::Effect3D(int playHandle):
 	m_playHandle(playHandle),
 	m_isDelete(false),

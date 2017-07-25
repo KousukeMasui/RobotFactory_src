@@ -20,17 +20,6 @@ struct Capsule;
 class Collision3D
 {
 public:
-
-	/// <summary>
-	/// 線と球の当たり判定 押し出しあり
-	/// </summary>
-	/// <param name="p1">線の始点</param>
-	/// <param name="p2">線の終点</param>
-	/// <param name="radius">半径</param>
-	/// <param name="circlePos">球の位置</param>
-	/// <param name="contactMyVector3">接点</param>
-	/// <returns></returns>
-	static bool Line_Sphere_Extrusion(const MyVector3& p1,const MyVector3& p2, float radius, MyVector3& circlePos, MyVector3& contactPoint);
 	//押し出しなし
 	static bool Line_Sphere(const MyVector3& p1, const MyVector3& p2, float radius,const MyVector3& circlePos,MyVector3& contactPoint);
 

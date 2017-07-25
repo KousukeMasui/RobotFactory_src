@@ -57,7 +57,6 @@ int MyGame::Run()
 	//while( — ‰æ–Ê‚ð•\‰æ–Ê‚É”½‰f,‰æ–ÊƒNƒŠƒA )
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && !CheckHitKey(KEY_INPUT_ESCAPE))
 	{
-
 		Update(m_fps.GetFrameTime());
 		Draw();
 		if (m_isEnd)

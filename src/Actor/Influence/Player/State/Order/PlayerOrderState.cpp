@@ -42,7 +42,11 @@ void PlayerOrderState::End()
 {
 	//クリックした先に移動命令
 	if (m_unit->get() != nullptr) {
-		m_unit->get()->Message((int)UnitMessageID::ROOT, m_player->GetCursor().PositionPtr());
+		auto target = m_player->GetMouseSelect().Update(0.0f);
+		if (target == nullptr)
+			m_unit->get()->Agent().SetRoot(m_player->GetCursor().Position());
+		else
+			m_unit->get()->Message((int)UnitMessageID::TO_UNIT, &target);
 		OrderClickFactory();
 	}
 	//選択解除
@@ -72,9 +76,10 @@ void PlayerOrderState::OrderClickFactory()
 	velocity.y = 0.0f;//高さは無効
 	if (velocity.Length() <= m_unit->get()->GetSphere().m_radius / 2.0f)
 	{
-		m_unit->get()->RoadDelete();
+		m_unit->get()->Agent().Delete();
 		return;
 	}
-	m_unit->get()->Message((int)UnitMessageID::ROOT, &(hit.hitPosition + hit.normal * m_unit->get()->GetSphere().m_radius));
+
+	m_unit->get()->Agent().SetRoot(hit.hitPosition + hit.normal * m_unit->get()->GetSphere().m_radius);
 }
 

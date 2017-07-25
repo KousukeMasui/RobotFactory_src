@@ -7,9 +7,10 @@
 #include"../PlayerStateID.h"
 #include"Manager/GameManager.h"
 #include"World/World.h"
-PlayerSelectState::PlayerSelectState(IWorld& world,Player* player):
+PlayerSelectState::PlayerSelectState(IWorld& world,Player* player,UnitPtr* unit):
 	m_world(world),
 	m_player(player),
+	m_unit(unit),
 	m_isEnd(false)
 {
 }
@@ -27,10 +28,9 @@ void PlayerSelectState::Update(float deltaTime)
 {
 	if (Mouse::GetInstance().IsPressUp(MouseCommand::LEFT))
 	{
-		auto unit = m_player->GetCursor().IsCollide(m_world.GetGameManager().GetUnitManager().GetVector(InfluenceID::PLAYER));
-		if (unit != nullptr)
+		if (*m_unit != nullptr)
 		{
-			m_player->Select(unit);
+			m_player->Select(*m_unit);
 			m_isEnd = true;
 			return;
 		}

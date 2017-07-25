@@ -1,5 +1,5 @@
 #include "Object.h"
-
+#include"Math/Converter.h"
 Object::Object(const MyVector3& position, const MyMatrix4& rotate):
 	m_position(position),
 	m_rotate(rotate)
@@ -32,4 +32,13 @@ void Object::Rotate(const MyMatrix4 & rotate)
 MyMatrix4 Object::GetPose() const
 {
 	return MyMatrix4(m_rotate).SetPosition(m_position);
+}
+
+bool Object::SlerpRotate(const MyVector3 & velocity, float deltaTime)
+{
+	//ˆÚ“®‚µ‚È‚¢ê‡‰ñ“]‚ğs‚í‚È‚¢
+	if (velocity.Length() <= FLT_EPSILON) return true;
+	//velocity•ûŒü‚É‰ñ“]‚³‚¹‚é
+	Rotate(MyMatrix4::Lerp(m_rotate, MyMatrix4::SetForward(-velocity, MyVector3(0, 1, 0)), 0.1f));
+	return Converter::RadToDeg(MyVector3::Angle(velocity, -m_rotate.GetForward())) <= 1.0f;
 }

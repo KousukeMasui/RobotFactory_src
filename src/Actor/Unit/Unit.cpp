@@ -24,8 +24,8 @@ Unit::Unit(IWorld & world, InfluenceID influence, const MyVector3& position, con
 	m_world(world),
 	m_isDelete(false),
 	m_model(MODEL_ID::UNIT, false, UnitAnimationID::IDLE, true, GetPose()),
-	m_capsule(m_position, world.GetGameManager().GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_HEIGHT, 1),
-		world.GetGameManager().GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_RADIUS, 1)),
+	m_capsule(m_position, world.GetGameManager().GetCSV().Get_F(CSV_DATA_ID::UNIT_HEIGHT, 1),
+		world.GetGameManager().GetCSV().Get_F(CSV_DATA_ID::UNIT_RADIUS, 1)),
 	m_nodeID(-1),
 	m_status(status),
 	m_influence(influence),
@@ -34,31 +34,25 @@ Unit::Unit(IWorld & world, InfluenceID influence, const MyVector3& position, con
 {
 	m_model.Update(0.0f, GetPose());
 	m_AITree.SetRoot(std::make_shared<IdleNode>(m_world, *this));
-	//モデルの色の設定
-	COLOR_F color;
-	if (m_influence == InfluenceID::ENEMY)
-	{
-		color.r = 51.0f;
-		color.b = 0.0f;
+	//色を変更するマテリアル番号
+	auto changeMatIndices = m_world.GetGameManager().GetCSV().Gets_I(CSV_DATA_ID::UNIT_COLOR_CHANGE_INDICES);
+	//色のパラメータを配列で取得
+	std::vector<float> color, ambientColor;
+	if (influence == InfluenceID::PLAYER) {
+		color = m_world.GetGameManager().GetCSV().Gets_F(CSV_DATA_ID::PLAYER_COLOR);
+		ambientColor = m_world.GetGameManager().GetCSV().Gets_F(CSV_DATA_ID::PLAYER_AMBIENT_COLOR);
 	}
-	else
-	{
-		color.r = 0.0f;
-		color.b = 51.0f;
+	else {
+		color = m_world.GetGameManager().GetCSV().Gets_F(CSV_DATA_ID::ENEMY_COLOR);
+		ambientColor = m_world.GetGameManager().GetCSV().Gets_F(CSV_DATA_ID::ENEMY_AMBIENT_COLOR);
 	}
-	color.g = 0.0f;
-	color.a = 1.0f;
-	const int index[] = { 0,5,6,8,9,11 };
-	auto ambColor = color;
-	ambColor.r *= 0.5f;
-	ambColor.b *= 0.5f;
-	for (int i = 0; i < 6; i++)
-	{
-		MV1SetMaterialDifColor(m_model.GetModelID(), index[i], color);
-		MV1SetMaterialAmbColor(m_model.GetModelID(), index[i], ambColor);
+	//色を設定
+	for (auto index : changeMatIndices) {
+		Color c(color[0], color[1], color[2], color[3]);
+		Color ambC(ambientColor[0], ambientColor[1], ambientColor[2], ambientColor[3]);
+		m_model.SetMaterialColor(index, c);
+		m_model.SetAmbientColor(index, ambC);
 	}
-
-	//m_status.hp /= 2.0f;
 }
 Unit::~Unit()
 {

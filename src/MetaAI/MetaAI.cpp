@@ -16,10 +16,10 @@ void MetaAI::Start(GameManager* manager)
 	m_distance.Start(manager);
 }
 
-void MetaAI::Update()
+void MetaAI::Update(float deltaTime)
 {
 	m_distance.Clear();
-	m_rootFind.Update();
+	m_rootFind.Update(deltaTime);
 }
 
 std::vector<Point2> MetaAI::GetUnitPoints(const Unit & unit)
@@ -31,17 +31,25 @@ std::vector<Point2> MetaAI::GetUnitPoints(const Unit & unit)
 	std::vector<Point2> result;
 	for (auto u : units)
 	{
+		Point2 start;
 		//ˆÚ“®’†‚Ìê‡
 		if (u->Agent().IsMove())
 		{
-			//–Ú“I’n‚ð•Û‘¶
-			result.push_back(PathFind3DUtility::ToNodePoint2(u->Agent().EndPoint()));
+			start = PathFind3DUtility::ToNodePoint2(u->Agent().EndPoint());
 		}
-		else
-		{
+		else{
 			//Œ»Ý‚ÌˆÊ’u‚ð•Û‘¶
-			result.push_back(PathFind3DUtility::ToNodePoint2(u->Position()));
+			start = PathFind3DUtility::ToNodePoint2(u->Position());;
 		}
+		//Žü‚è‚àŽæ“¾‚·‚é
+		for (int x = -1; x <= 1; x++)
+		{
+			for (int y = -1; y <= 1; y++) {
+				result.push_back(start + Point2(x, y));
+			}
+
+		}
+
 	}
 	return result;
 }

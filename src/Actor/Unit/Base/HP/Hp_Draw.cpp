@@ -19,11 +19,11 @@ void Hp_Draw::Clear()
 {
 	m_spriteManager.Clear();
 }
-void Hp_Draw::Set(int maxHP, float hp, const MyVector2& scale, const MyVector3& position)
+void Hp_Draw::Set(float maxHP, float hp, const MyVector2& scale, const MyVector3& position)
 {
 	m_spriteManager.Save(TEXTURE_ID::HP_FRAME, position, scale);
 
-	float percent = hp / (float)maxHP;
+	float percent = hp / maxHP;
 	m_spriteManager.Save(TEXTURE_ID::HP_GAUGE, position, scale
 		,MyRect(0,0,Loader::GetInstance().TextureSize(TEXTURE_ID::HP_GAUGE).x * percent,
 			Loader::GetInstance().TextureSize(TEXTURE_ID::HP_GAUGE).y)

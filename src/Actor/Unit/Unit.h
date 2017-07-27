@@ -9,7 +9,7 @@
 #include"Model/AnimationModel/AnimationModel.h"
 #include"ToUnit/ToUnit.h"
 #include<functional>
-#include"Actor/Influence/AIAction/MetaAI/RootFind/RootAgent.h"
+#include"MetaAI/RootFind/RootAgent.h"
 class IWorld;
 //画面上に命令を出した際に動くキャラクター
 //所属変わるときは一回パラメータを取得してから一回殺して再生成する

@@ -6,7 +6,7 @@
 ToUnit::ToUnit(GameManager& manager,Unit& unit):
 	m_myUnit(unit),
 	m_manager(manager),
-	m_moveDistance(manager.GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_ATTACK_RANGE,1))
+	m_moveDistance(manager.GetCSV().Get_F(CSV_DATA_ID::UNIT_ATTACK_RANGE,1))
 {
 	
 }

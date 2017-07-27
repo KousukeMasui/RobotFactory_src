@@ -1,19 +1,20 @@
 #include "FactoryStatus.h"
 
 #include<DxLib.h>
-FactoryStatus::FactoryStatus(const std::function<void(const UnitStatus&status)>& createFunc) :
-	maxHP(50),
-	hp(50.0f),
-	healInterval(1),
-	partsCount(20),
+#include"CSVReader/CSVData.h"
+FactoryStatus::FactoryStatus(CSVData& csvData,const std::function<void(const UnitStatus&status)>& createFunc) :
+	maxHP(csvData.Get_F(CSV_DATA_ID::FACTORY_MAX_HP,1)),
+	hp(maxHP),
+	healInterval(csvData.Get_I(CSV_DATA_ID::FACTORY_HEAL_INTERVAL_SECOND,1)),
+	partsCount(csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_PARTS,1)),
 	createFunc(createFunc)
 {
-	status[FactoryStatusID::HEAL_POWER] = 1;
-	status[FactoryStatusID::HEAL_RANGE] = 1;
-	status[FactoryStatusID::UNIT_ATK] = 1;
-	status[FactoryStatusID::UNIT_HP] = 1;
-	status[FactoryStatusID::UNIT_SPD] = 1;
-	status[FactoryStatusID::CREATE] = 10;
+	status[FactoryStatusID::HEAL_POWER] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_HEAL_POWER, 1);
+	status[FactoryStatusID::HEAL_RANGE] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_HEAL_RANGE, 1);
+	status[FactoryStatusID::UNIT_ATK] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_ATK, 1);
+	status[FactoryStatusID::UNIT_HP] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_HP, 1);
+	status[FactoryStatusID::UNIT_SPD] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_SPD, 1);
+	status[FactoryStatusID::CREATE] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_CREATE, 1);
 }
 //生成時のステータスにして返す
 

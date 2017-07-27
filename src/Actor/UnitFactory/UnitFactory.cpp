@@ -21,7 +21,7 @@ UnitFactory::UnitFactory(IWorld& world, InfluenceID influence, const MyVector3& 
 	m_model(MODEL_ID::FACTORY,false, MyMatrix4::Scale(0.025f, 0.025f, 0.025f) * MyMatrix4::Translate(position) ),
 	m_point(PathFind3DUtility::ToNodePoint2(position)),
 	m_param(position,influence),
-	m_status([&](const UnitStatus& status) {CreateStart(status); }),
+	m_status(world.GetGameManager().GetCSV(),[&](const UnitStatus& status) {CreateStart(status); }),
 	m_autoAI(world,position,*this),
 	m_heal(world,this)
 {

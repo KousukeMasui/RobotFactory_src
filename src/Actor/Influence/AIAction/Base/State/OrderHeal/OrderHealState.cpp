@@ -35,19 +35,8 @@ void OrderHealState::Draw() const
 
 void OrderHealState::End()
 {
-	auto factorys = m_world.GetGameManager().GetFactoryManager().All();
-	for (auto factory : factorys)
-	{
-		if (m_factory == &*factory) continue;
-
-		if (factory->IsCollide(m_line).isHit)
-		{
-			m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
-				m_targetPosition, m_unit->Agent());
-			return;
-		}
-	}
-	m_unit->Agent().SetRoot(m_cursor->Position());
+	m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
+		m_targetPosition, m_unit->Agent());
 }
 
 int OrderHealState::Next() const

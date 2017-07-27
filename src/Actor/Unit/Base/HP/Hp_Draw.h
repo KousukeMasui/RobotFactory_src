@@ -23,7 +23,7 @@ public:
 	explicit Hp_Draw(IWorld& world);
 	~Hp_Draw();
 	void Clear();
-	void Set(int maxHP,float hp,const MyVector2& scale,const MyVector3& position);
+	void Set(float maxHP,float hp,const MyVector2& scale,const MyVector3& position);
 
 	void Draw();
 private:

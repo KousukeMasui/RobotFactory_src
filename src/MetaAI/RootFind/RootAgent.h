@@ -33,7 +33,6 @@ public:
 	const MyVector3 EndPoint() const;
 	//Œo˜Híœ
 	void Delete();
-
 	//Œo˜H‚ğ•`‰æ
 	void Draw(const Color& color) const;
 private:

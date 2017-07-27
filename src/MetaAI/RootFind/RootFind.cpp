@@ -3,14 +3,22 @@
 #include"RootAgent.h"
 RootFind::RootFind():
 	m_field(),
-	m_findMax(3)
+	m_findMaxSecond(3),
+	m_frameTimer(0.0f),
+	m_nowSecondFind(0)
 {
 }
 RootFind::~RootFind()
 {
 }
-void RootFind::Update()
+void RootFind::Update(float deltaTime)
 {
+	m_frameTimer += deltaTime;
+	if (m_frameTimer >= 60.0f)
+	{
+		m_frameTimer = 0.0f;
+		m_nowSecondFind = 0;
+	}
 	Find();
 }
 
@@ -21,6 +29,10 @@ PathFinder RootFind::CreatePathFinder()
 
 void RootFind::PathFind(const PathFinder & finder, const MyVector3 & target, RootAgent& agent)
 {
+	//ä˘Ç…ìoò^çœÇ›ÇÃèÍçáìoò^ÇµÇ»Ç¢
+	for (auto fData : m_findTargetData) {
+		if (&fData.agent == &agent) return;
+	}
 	agent.StartFind();
 	m_findTargetData.push_back(FindTargetData(finder, agent, target));
 	m_findIDs.push_back(FindID::SINGLE);
@@ -28,6 +40,10 @@ void RootFind::PathFind(const PathFinder & finder, const MyVector3 & target, Roo
 
 void RootFind::PathFind(const PathFinder & finder, const std::vector<Point2>& targets, RootAgent& agent)
 {
+	//ä˘Ç…ìoò^çœÇ›ÇÃèÍçáìoò^ÇµÇ»Ç¢
+	for (auto fData : m_findMultiTargetData) {
+		if (&fData.agent == &agent) return;
+	}
 	agent.StartFind();
 	PathFinder f = finder;
 	f.AddTargets(targets);
@@ -51,7 +67,8 @@ void RootFind::Find()
 	int cnt = 0;
 	for (auto idItr = m_findIDs.begin(); idItr != m_findIDs.end(); idItr++)
 	{
-		if (cnt >= m_findMax) break;
+		if (m_nowSecondFind >= m_findMaxSecond) break;
+		m_nowSecondFind++;
 		cnt++;
 		std::vector<NodePtr> nodes;
 		FindMultiTargetData* data;

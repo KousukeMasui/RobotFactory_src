@@ -35,21 +35,8 @@ void OrderLiftObjectState::Draw() const
 
 void OrderLiftObjectState::End()
 {
-	//真っすぐ進んだ場合、ぶつかるか判定
-	auto factorys = m_world.GetGameManager().GetFactoryManager().All();
-	Capsule capsule(m_unit->Position(), m_lift->Position(), m_unit->GetSphere().m_radius);
-
-	for (auto factory : factorys)
-	{
-		if (factory->IsCollide(capsule))
-		{
-			m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
-				m_lift->Position(), m_unit->Agent());
-			return;
-
-		}
-	}//当たらない場合直進させる
-	m_unit->Agent().SetRoot(m_lift->Position());
+	m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
+		m_lift->Position(), m_unit->Agent());
 }
 
 int OrderLiftObjectState::Next() const

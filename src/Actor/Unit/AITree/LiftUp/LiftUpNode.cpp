@@ -45,7 +45,7 @@ bool LiftUpNode::Branch()
 	if (lift == nullptr ||lift->IsLiftStart()|| lift->IsDelete()) return false;
 
 	if (m_world.GetGameManager().GetMetaAI().Distance().Distance(*lift,m_unit) <=
-		m_world.GetGameManager().GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_LIFT_RANGE, 1))
+		m_world.GetGameManager().GetCSV().Get_F(CSV_DATA_ID::UNIT_LIFT_RANGE, 1))
 	{
 		m_unit.Message((int)UnitMessageID::LIFT, &lift);
 		m_unit.GetLift()->LiftStart();

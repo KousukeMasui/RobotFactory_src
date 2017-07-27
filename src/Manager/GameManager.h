@@ -7,7 +7,7 @@
 #include"FactoryManager.h"
 #include"UnitManager.h"
 #include"CSVReader/CSVData.h"
-#include"Actor/Influence/AIAction/MetaAI/MetaAI.h"
+#include"MetaAI/MetaAI.h"
 class Influence;
 class Hp_Draw;
 typedef TemplateManager<int, Parts, MyVector3> PartsManager;
@@ -42,6 +42,9 @@ public:
 	MetaAI& GetMetaAI();
 private:
 	void UnitUpdate(float deltaTime);
+
+	//CSVì«Ç›çûÇ›
+	void CSVLoad();
 private:
 	UnitManager m_unitManager;
 	PartsManager m_partsManager;

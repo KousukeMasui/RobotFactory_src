@@ -26,7 +26,7 @@ void PriorityToLiftObject::Initialize()
 
 void PriorityToLiftObject::Update(float deltaTime)
 {
-	if (m_orderUnit == nullptr || m_target == nullptr)
+	if (m_orderUnit == nullptr || m_target == nullptr || m_target->IsDelete())
 	{
 		m_isEnd = true;
 		return;

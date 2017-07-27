@@ -19,8 +19,9 @@ public:
 
 
 	Color GetMaterialColor(unsigned int materialIndex) const;
-
 	void SetMaterialColor(unsigned int materialIndex, const Color & color) const;
+
+	void SetAmbientColor(unsigned int materialIndex, const Color & color) const;
 	int GetModelID() const;
 protected:
 	int m_modelID;//ƒ‚ƒfƒ‹ID

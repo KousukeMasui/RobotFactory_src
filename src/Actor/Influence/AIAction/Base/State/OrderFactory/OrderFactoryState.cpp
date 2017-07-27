@@ -45,11 +45,11 @@ void OrderFactoryState::End()
 	//FindRoot();
 
 	PathFinder f = m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder();
-	//auto nonePoints = m_world.GetGameManager().GetMetaAI().GetUnitPoints(*m_unit);
-	//for (auto p : nonePoints)
-	//	f[p]->SetWalkable(false);//ˆÚ“®•s‰Â‚Æ‚µ‚Äˆµ‚¤
+	auto nonePoints = m_world.GetGameManager().GetMetaAI().GetUnitPoints(*m_unit);
+	for (auto p : nonePoints)
+		f[p]->SetWalkable(false);//ˆÚ“®•s‰Â‚Æ‚µ‚Äˆµ‚¤
 
-	auto ps = m_factory->GetPoints();// VectorUtility::NonObjects<Point2>(m_factory->GetPoints(), nonePoints);
+	auto ps = VectorUtility::NonObjects<Point2>(m_factory->GetPoints(), nonePoints);
 	
 	m_world.GetGameManager().GetMetaAI().GetFind().PathFind(f, ps, m_unit->Agent());
 }

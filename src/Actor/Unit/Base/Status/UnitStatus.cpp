@@ -8,11 +8,11 @@ UnitStatus::UnitStatus(int hpLevel, int attackLevel, int speedLevel, float range
 	m_levels[UNIT_STATUS_ID::ATK] = attackLevel;
 	m_levels[UNIT_STATUS_ID::SPD] = speedLevel;
 
-	m_status[UNIT_STATUS_ID::HP] = manager->GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_HP, hpLevel);
+	m_status[UNIT_STATUS_ID::HP] = manager->GetCSV().Get_F(CSV_DATA_ID::UNIT_HP, hpLevel);
 	m_status[UNIT_STATUS_ID::MAX_HP] = m_status[UNIT_STATUS_ID::HP];
 
-	m_status[UNIT_STATUS_ID::ATK] = manager->GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_ATK, attackLevel);
-	m_status[UNIT_STATUS_ID::SPD] = manager->GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_SPD, speedLevel);
+	m_status[UNIT_STATUS_ID::ATK] = manager->GetCSV().Get_F(CSV_DATA_ID::UNIT_ATK, attackLevel);
+	m_status[UNIT_STATUS_ID::SPD] = manager->GetCSV().Get_F(CSV_DATA_ID::UNIT_SPD, speedLevel);
 	m_status[UNIT_STATUS_ID::RANGE] = range;
 }
 

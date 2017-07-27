@@ -16,7 +16,7 @@ public:
 	~RootFind();
 
 	//更新
-	void Update();
+	void Update(float deltaTime);
 	//経路探索用クラス生成
 	PathFinder CreatePathFinder();
 
@@ -33,8 +33,12 @@ private:
 	std::list<FindMultiTargetData> m_findMultiTargetData;
 	//経路探索を行う順番
 	std::list<FindID> m_findIDs;
-	//1フレームで何回経路探索するか
-	const int m_findMax;
+	//1秒で何回経路探索するか
+	const int m_findMaxSecond;
+	//現在何回検索したか
+	int m_nowSecondFind;
+	//フレームタイマ
+	float m_frameTimer;
 	//ノード情報
 	FieldMap m_field;
 };

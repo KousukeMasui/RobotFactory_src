@@ -14,7 +14,7 @@ public:
 	//ゲーム開始
 	void Start(GameManager* manager);
 	//更新
-	void Update();
+	void Update(float deltaTime);
 	//引数以外のユニットの位置
 	std::vector<Point2> GetUnitPoints(const Unit& unit);
 	//距離クラス

@@ -5,10 +5,11 @@
 #include<functional>
 #include<map>
 #include"../FactoryStatusID.h"
+class CSVData;
 class FactoryStatus
 {
 public:
-	explicit FactoryStatus(const std::function<void(const UnitStatus& status)>& createFunc);
+	explicit FactoryStatus(CSVData& csvData,const std::function<void(const UnitStatus& status)>& createFunc);
 	//生成時のステータスにして返す
 	UnitStatus CreateStatus(GameManager* manager) const;
 	//生成に必要な資源数を求めて返す
@@ -22,7 +23,7 @@ public:
 	void StatusUp(FactoryStatusID status,GameManager* manager);
 public:
 	//工場のHP
-	int maxHP;
+	float maxHP;
 	float hp;
 	int healInterval;
 

@@ -49,7 +49,7 @@ bool BattleNode::Branch()
 		[&](const Unit& unit) {return !unit.IsDead() && unit.GetInfluence() != m_unit.GetInfluence(); });
 	
 	if (m_target != nullptr && m_world.GetGameManager().GetMetaAI().Distance().Distance(m_unit,*m_target) <= 
-		m_world.GetGameManager().GetCSV().Get_F(CSVData::CSV_DATA_ID::UNIT_ATTACK_RANGE,1))//一番近いユニットとの距離が一定範囲いないだったら攻撃状態へ
+		m_world.GetGameManager().GetCSV().Get_F(CSV_DATA_ID::UNIT_ATTACK_RANGE,1))//一番近いユニットとの距離が一定範囲いないだったら攻撃状態へ
 	{
 		m_targetFactory = nullptr;
 		return true;

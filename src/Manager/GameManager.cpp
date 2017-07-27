@@ -13,6 +13,18 @@
 GameManager::GameManager() :
 	m_metaAI()
 {
+	//工場の初期値を読み込み
+	m_csvData.Start("res/csv/factoryStatus.csv");
+	m_csvData.Set(DATA_TYPE::FLOAT,CSV_DATA_ID::FACTORY_MAX_HP, Point2(0, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_PARTS, Point2(1, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_HEAL_INTERVAL_SECOND, Point2(2, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_UNIT_HP, Point2(3, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_UNIT_ATK, Point2(4, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_UNIT_SPD, Point2(5, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_HEAL_RANGE, Point2(6, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_HEAL_POWER, Point2(7, 1));
+	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_CREATE, Point2(8, 1));
+	m_csvData.End();
 }
 
 GameManager::~GameManager()
@@ -22,19 +34,8 @@ GameManager::~GameManager()
 void GameManager::GameStart(World& world)
 {
 	m_metaAI.Start(this);
-	//csv読み込み
-	m_csvData.Start("res/csv/unitParameter.csv");
-	m_csvData.Set_F(CSVData::CSV_DATA_ID::UNIT_RADIUS, Point2(0, 1), 2);
-	m_csvData.Set_F(CSVData::CSV_DATA_ID::UNIT_HEIGHT, Point2(1, 1), 2);
-	m_csvData.Set_F(CSVData::CSV_DATA_ID::UNIT_ATTACK_RANGE, Point2(2, 1), 2);
-	m_csvData.Set_F(CSVData::CSV_DATA_ID::UNIT_LIFT_RANGE, Point2(3, 1), 2);
-	m_csvData.End();
-	//ユニットの強化時のステータスを読み込み
-	m_csvData.Start("res/csv/unitLevelParameter.csv");
-	m_csvData.Set_F(CSVData::CSV_DATA_ID::UNIT_HP, Point2(1,1));
-	m_csvData.Set_F(CSVData::CSV_DATA_ID::UNIT_ATK, Point2(2, 1));
-	m_csvData.Set_F(CSVData::CSV_DATA_ID::UNIT_SPD, Point2(3, 1));
-	m_csvData.End();
+
+	CSVLoad();
 
 	//初期ユニット
 	m_unitManager.Add(InfluenceID::PLAYER, std::make_shared<Unit>(world, InfluenceID::PLAYER, 
@@ -124,7 +125,7 @@ void GameManager::Update(float deltaTime)
 
 	m_partsManager.Remove();
 
-	m_metaAI.Update();
+	m_metaAI.Update(deltaTime);
 }
 
 void GameManager::Draw() const
@@ -137,7 +138,7 @@ void GameManager::Draw() const
 	m_hp->Clear();
 	//HPの表示
 	m_unitManager.Function([&](const UnitPtr& unit) {
-		m_hp->Set((int)unit->GetStatus().Status(UNIT_STATUS_ID::MAX_HP), unit->GetStatus().Status(UNIT_STATUS_ID::HP),
+		m_hp->Set(unit->GetStatus().Status(UNIT_STATUS_ID::MAX_HP), unit->GetStatus().Status(UNIT_STATUS_ID::HP),
 			MyVector2(100.0f, 40.0f), unit->Position() + MyVector3(0.0f, 20.0f, 0.0f));
 	});
 	m_factoryManager.Function([&](const FactoryPtr& factory) {
@@ -173,4 +174,30 @@ void GameManager::UnitUpdate(float deltaTime)
 		m_unitManager.Move(InfluenceID::EFFECT, unit->GetInfluence(), &*unit);
 	}
 	m_unitManager.Update(deltaTime);
+}
+
+void GameManager::CSVLoad()
+{
+	//csv読み込み
+	m_csvData.Start("res/csv/unitParameter.csv");
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::UNIT_RADIUS, Point2(0, 1), 2);
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::UNIT_HEIGHT, Point2(1, 1), 2);
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::UNIT_ATTACK_RANGE, Point2(2, 1), 2);
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::UNIT_LIFT_RANGE, Point2(3, 1), 2);
+	m_csvData.End();
+	//ユニットの強化時のステータスを読み込み
+	m_csvData.Start("res/csv/unitLevelParameter.csv");
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::UNIT_HP, Point2(1, 1));
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::UNIT_ATK, Point2(2, 1));
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::UNIT_SPD, Point2(3, 1));
+	m_csvData.End();
+	//ユニットの勢力毎の色を読み込み
+	m_csvData.Start("res/csv/unitColor.csv");
+	m_csvData.Set(DATA_TYPE::INT, CSV_DATA_ID::UNIT_COLOR_CHANGE_INDICES, Point2(0, 1));
+
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::PLAYER_COLOR, Point2(1, 1),5);
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::PLAYER_AMBIENT_COLOR, Point2(2, 1), 5);
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::ENEMY_COLOR, Point2(3, 1), 5);
+	m_csvData.Set(DATA_TYPE::FLOAT, CSV_DATA_ID::ENEMY_AMBIENT_COLOR, Point2(4,1), 5);
+	m_csvData.End();
 }

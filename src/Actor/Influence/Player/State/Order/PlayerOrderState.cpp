@@ -42,11 +42,11 @@ void PlayerOrderState::End()
 {
 	//クリックした先に移動命令
 	if (m_unit->get() != nullptr) {
-		auto target = m_player->GetMouseSelect().Update(0.0f);
-		if (target == nullptr)
+		//auto target = m_player->GetMouseSelect().Update(0.0f);
+		//if (target == nullptr)
 			m_unit->get()->Agent().SetRoot(m_player->GetCursor().Position());
-		else
-			m_unit->get()->Message((int)UnitMessageID::TO_UNIT, &target);
+		//else
+		//	m_unit->get()->Message((int)UnitMessageID::TO_UNIT, &target);
 		OrderClickFactory();
 	}
 	//選択解除

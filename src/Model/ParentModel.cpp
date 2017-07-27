@@ -54,9 +54,15 @@ void ParentModel::SetMaterialColor(unsigned int materialIndex, const Color & col
 {
 	COLOR_F c = { color.r,color.g,color.b,color.a };
 
-	MV1SetMaterialAmbColor(m_modelID, materialIndex, c);
 	MV1SetMaterialDifColor(m_modelID, materialIndex, c);
 	MV1SetMaterialSpcColor(m_modelID, materialIndex, c);
+	MV1SetMaterialAmbColor(m_modelID, materialIndex, c);
+}
+
+void ParentModel::SetAmbientColor(unsigned int materialIndex, const Color & color) const
+{
+	COLOR_F c = { color.r,color.g,color.b,color.a };
+	MV1SetMaterialAmbColor(m_modelID, materialIndex, c);
 }
 
 int ParentModel::GetModelID() const

@@ -8,10 +8,8 @@
 #include"Effect\Effect3D.h"
 #include"Base/VectorUtility/VectorUtility.h"
 #include"Math/Converter.h"
-#include"Actor/Unit/AITree/Node/UnitNodeID.h"
 #include"Math/Collision/Collision3D.h"
 #include"Math/Shapes/Renderer/ShapeRenderer.h"
-#include"Math/Extrusion/Extrusion3D.h"
 #include"Actor/Unit/Base/UnitMessageID.h"
 const MyVector3 EFFECT_SCALE = MyVector3(60, 40, 60);
 
@@ -22,12 +20,13 @@ UnitFactory::UnitFactory(IWorld& world,RootFind& find, InfluenceID influence, co
 	m_model(MODEL_ID::FACTORY,false, MyMatrix4::Scale(0.025f, 0.025f, 0.025f) * MyMatrix4::Translate(position) ),
 	m_point(PathFind3DUtility::ToNodePoint2(position)),
 	m_param(position,influence),
-	m_status(world.GetGameManager().GetCSV(),[&](const UnitStatus& status) {CreateStart(status); }),
+	m_status(world,find,m_param),
 	m_autoAI(world,position,*this),
 	m_heal(world,this)
 {
 	//周りのpointを計算
 	PointsSet();
+
 }
 UnitFactory::~UnitFactory()
 {
@@ -121,26 +120,6 @@ void UnitFactory::StatusUp(FactoryStatusID id)
 	{
 		m_heal.StatusUp(m_status);
 	}
-}
-
-void UnitFactory::CreateStart(const UnitStatus & status)
-{
-	
-	m_createStatus.push_back(status);
-	if (m_createStatus.size() >= 2) return;
-	Create(m_createStatus.front());
-}
-
-void UnitFactory::Create(const UnitStatus & status)
-{
-	auto unit = std::make_shared<Unit>(m_world,m_find, m_param.influence, m_param.Position(), status);
-	m_world.GetGameManager().AddUnit(InfluenceID::EFFECT, unit);
-	//ユニットが停止したら生成関数をもう一度行う
-	unit->CreateAI([&]() {
-		if (!m_createStatus.empty())m_createStatus.pop_front();
-		if (m_createStatus.size() <= 0) return;
-		Create(m_createStatus.front());
-	});
 }
 
 void UnitFactory::Damage(float attack, InfluenceID influence)

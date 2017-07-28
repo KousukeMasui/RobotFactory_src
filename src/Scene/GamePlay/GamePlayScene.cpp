@@ -25,7 +25,7 @@ m_isEnd(false),
 m_isEndEffect(false),
 m_isWin(isWin)
 {
-	Loader::GetInstance().EffectLoad(EffectID::HEAL, "./res/Effect/Heal_.efk");
+	Loader::GetInstance().EffectLoad(EffectID::HEAL, "./res/Effect/healEffect.efk");
 	Loader::GetInstance().EffectLoad(EffectID::POWER_UP, "./res/Effect/PowerUp.efk");
 
 

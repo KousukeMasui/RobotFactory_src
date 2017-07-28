@@ -19,12 +19,16 @@ public:
 	//地面との当たり判定
 	HitInfo IsCollide(const Line3D& line);
 	HitInfo IsCollide(const MyVector3& p1, const MyVector3& p2);
+	//地面モデルに接地した位置を返す
+	MyVector3 OnPosition(const MyVector3& position);
 private:
 	StaticModel m_groundModel;
 	//空モデルデータ
 	StaticModel m_skyModel;
 	//フィールドの範囲描画用モデル
 	StaticModel m_clampModel;
+
+	float testAddY;
 };
 
 #endif

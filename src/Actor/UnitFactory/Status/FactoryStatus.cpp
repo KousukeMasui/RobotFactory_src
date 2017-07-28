@@ -2,19 +2,20 @@
 
 #include<DxLib.h>
 #include"CSVReader/CSVData.h"
-FactoryStatus::FactoryStatus(CSVData& csvData,const std::function<void(const UnitStatus&status)>& createFunc) :
-	maxHP(csvData.Get_F(CSV_DATA_ID::FACTORY_MAX_HP,1)),
+#include"World/World.h"
+FactoryStatus::FactoryStatus(IWorld& world, RootFind& find, FactoryParam& param) :
+	maxHP(world.GetGameManager().GetCSV().Get_F(CSV_DATA_ID::FACTORY_MAX_HP,1)),
 	hp(maxHP),
-	healInterval(csvData.Get_I(CSV_DATA_ID::FACTORY_HEAL_INTERVAL_SECOND,1)),
-	partsCount(csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_PARTS,1)),
-	createFunc(createFunc)
+	healInterval(world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_HEAL_INTERVAL_SECOND,1)),
+	partsCount(world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_INIT_PARTS,1)),
+	m_create(world,find,param)
 {
-	status[FactoryStatusID::HEAL_POWER] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_HEAL_POWER, 1);
-	status[FactoryStatusID::HEAL_RANGE] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_HEAL_RANGE, 1);
-	status[FactoryStatusID::UNIT_ATK] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_ATK, 1);
-	status[FactoryStatusID::UNIT_HP] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_HP, 1);
-	status[FactoryStatusID::UNIT_SPD] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_SPD, 1);
-	status[FactoryStatusID::CREATE] = csvData.Get_I(CSV_DATA_ID::FACTORY_INIT_CREATE, 1);
+	status[FactoryStatusID::HEAL_POWER] = world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_INIT_HEAL_POWER, 1);
+	status[FactoryStatusID::HEAL_RANGE] = world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_INIT_HEAL_RANGE, 1);
+	status[FactoryStatusID::UNIT_ATK] = world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_ATK, 1);
+	status[FactoryStatusID::UNIT_HP] = world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_HP, 1);
+	status[FactoryStatusID::UNIT_SPD] = world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_INIT_UNIT_SPD, 1);
+	status[FactoryStatusID::CREATE] = world.GetGameManager().GetCSV().Get_I(CSV_DATA_ID::FACTORY_INIT_CREATE, 1);
 }
 //生成時のステータスにして返す
 
@@ -55,6 +56,11 @@ void FactoryStatus::StatusUp(FactoryStatusID status, GameManager* manager)
 	}
 	else//生成を行う
 	{
-		createFunc(CreateStatus(manager));
+		Create(CreateStatus(manager));
 	}
+}
+
+void FactoryStatus::Create(const UnitStatus & status)
+{
+	m_create.Create(status);
 }

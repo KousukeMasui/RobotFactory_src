@@ -69,11 +69,17 @@ void RootAgent::SetRoot(const MyVector3 & position)
 {
 	m_root.clear();
 	m_root.push_back(position);
+
+	for (int i = 0; i < m_root.size(); i++)
+		m_root[i].y = m_object.Position().y;
+	m_isFindWait = false;
 }
 
 void RootAgent::SetRoot(const std::vector<MyVector3>& root)
 {
 	m_root = root;
+	for (int i = 0; i < m_root.size(); i++)
+		m_root[i].y = m_object.Position().y;
 	m_isFindWait = false;
 }
 

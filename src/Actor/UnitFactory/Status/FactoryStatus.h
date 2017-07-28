@@ -5,11 +5,15 @@
 #include<functional>
 #include<map>
 #include"../FactoryStatusID.h"
+#include"Create/UnitCreate.h"
 class CSVData;
+class IWorld;
+class RootFind;
+struct FactoryParam;
 class FactoryStatus
 {
 public:
-	explicit FactoryStatus(CSVData& csvData,const std::function<void(const UnitStatus& status)>& createFunc);
+	explicit FactoryStatus(IWorld& world,RootFind& find,FactoryParam& param);
 	//生成時のステータスにして返す
 	UnitStatus CreateStatus(GameManager* manager) const;
 	//生成に必要な資源数を求めて返す
@@ -21,6 +25,8 @@ public:
 	bool IsStatusUp(FactoryStatusID status);
 	//強化関数
 	void StatusUp(FactoryStatusID status,GameManager* manager);
+
+	void Create(const UnitStatus& status);
 public:
 	//工場のHP
 	float maxHP;
@@ -32,6 +38,5 @@ public:
 
 	int partsCount;//保有する資源数
 private:
-	//ユニット生成に使う処理を入れる変数
-	std::function<void(const UnitStatus& status)>createFunc;
+	UnitCreate m_create;
 };

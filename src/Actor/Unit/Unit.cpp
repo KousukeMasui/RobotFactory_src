@@ -1,19 +1,9 @@
 #include "Unit.h"
-#include"Actor\Base\IWorld.h"
-#include"Math/MyMath.h"
 #include"AITree\Idle\IdleNode.h"
 #include"Math\Collision\Collision3D.h"
-#include"Math\Collision\Model\ModelCollision.h"
-#include"Loader\Loader.h"
-#include"Math/MyRect/MyRect.h"
 #include"Manager\GameManager.h"
-#include"Base/RoadFinder/PathFind3DUtility.h"
-#include"Base/RoadFinder/Map/FieldMap.h"
-#include"Base\RoadFinder\PathFinder.h"
 #include"Effect\Effect3D.h"
 #include"World/World.h"
-#include"Base/VectorUtility/VectorUtility.h"
-#include"Math/Shapes/Renderer/ShapeRenderer.h"
 #include"Base/UnitMessageID.h"
 #include"Base/UnitAnimationID.h"
 #include"Actor/UnitFactory/UnitFactory.h"
@@ -32,6 +22,7 @@ Unit::Unit(IWorld & world, RootFind& find, InfluenceID influence, const MyVector
 	m_toUnit(world.GetGameManager(),*this),
 	m_rootAgent(find,*this)
 {
+	m_position = m_world.GetField()->OnPosition(m_position);
 	m_model.Update(0.0f, GetPose());
 	m_AITree.SetRoot(std::make_shared<IdleNode>(m_world, *this));
 	//色を変更するマテリアル番号
@@ -53,26 +44,12 @@ Unit::Unit(IWorld & world, RootFind& find, InfluenceID influence, const MyVector
 		m_model.SetMaterialColor(index, c);
 		m_model.SetAmbientColor(index, ambC);
 	}
+
+	m_status.AddHP(-m_status.Status(UNIT_STATUS_ID::MAX_HP) / 2);
 }
 Unit::~Unit()
 {
 	m_model.Delete();
-}
-void Unit::CreateAI(const std::function<void()>& createFunc)
-{
-	Point2 my = PathFind3DUtility::ToNodePoint2(m_position);
-	float x = MyMath::Clamp(m_position.x - STAGE_CENTER.x, -1, 1);
-	PathFinder finder = m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder();
-	Point2 point(0,0);
-	NodePtr node = nullptr;
-	do
-	{
-		point.x += (int)x;
-		node = finder[my + point];
-	} while (node->Index() != 0);
-
-	m_rootAgent.SetRoot(PathFind3DUtility::ToPosition(node->position()));
-	m_stopFunc = createFunc;
 }
 
 UnitStatus& Unit::GetStatus()
@@ -112,7 +89,7 @@ void Unit::LiftDown(FactoryPtr factory)
 	//自分は削除される
 	m_isDelete = true;
 
-	factory->Create(m_status);
+	factory->Status().Create(m_status);
 }
 
 int Unit::NodeID() const
@@ -200,14 +177,16 @@ void Unit::Update(float deltaTime)
 		Move(vec *length);
 		Agent().Delete();
 	}
+
+	m_position = m_world.GetField()->OnPosition(m_position);
+	//回転行列の補正
+	auto forward = m_rotate.GetForward();
+	forward.y = 0;
+	m_rotate = MyMatrix4::SetForward(forward, MyVector3(0, 1, 0));
 }
 
 void Unit::Move(const MyVector3 & velocity)
 {
-	if (m_stopFunc != nullptr) {
-		m_stopFunc();
-		m_stopFunc = nullptr;
-	}
 	m_capsule.Translate(velocity);
 	m_position += velocity;
 }

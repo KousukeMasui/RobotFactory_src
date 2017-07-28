@@ -34,7 +34,7 @@ void World::Update(float deltaTime)
 
 		m_effectManager->Update(deltaTime);
 
-		//m_field->Update(deltaTime);
+		m_field->Update(deltaTime);
 		m_camera[m_cameraMode]->Update(deltaTime);
 		if(m_debug!= nullptr) m_debug->Update(deltaTime);
 	}
@@ -70,6 +70,7 @@ void World::Draw() const
 
 void World::StageCreate()
 {
+	m_field = std::make_shared<Field>();
 	m_gameManager = std::make_shared<GameManager>();
 	CSVReader csv("res/csv/factoryPosition.csv");
 
@@ -82,7 +83,6 @@ void World::StageCreate()
 		m_gameManager->AddUnitFactory(*this, id,MyVector3(csv.getf(row, 1), csv.getf(row, 2), csv.getf(row, 3)));
 	}
 	AddLight(std::make_shared<Light>(*this, MyVector3(451.1f, 290.28f, 843.94f)));
-	m_field = std::make_shared<Field>();
 }
 
 void World::GameStart()

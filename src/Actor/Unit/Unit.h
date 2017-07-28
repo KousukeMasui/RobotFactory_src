@@ -18,8 +18,6 @@ class Unit : public LiftObject
 public:
 	Unit(IWorld& world,RootFind& find, InfluenceID influence,const MyVector3& position,const UnitStatus& status);
 	~Unit();
-	//生成された際の処理
-	void CreateAI(const std::function<void()>& createFunc);
 	//ステータスを返す
 	UnitStatus& GetStatus();
 	//プレイヤーの選択当たり判定
@@ -78,8 +76,6 @@ private:
 	UnitStatus m_status;
 	//運んでいる物体
 	std::shared_ptr<LiftObject> m_liftObject;
-	//停止時実行関数
-	std::function<void()> m_stopFunc;
 	//ユニット追従クラス
 	ToUnit m_toUnit;
 

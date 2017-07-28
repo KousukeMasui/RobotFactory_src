@@ -3,8 +3,9 @@
 #include"../UnitFactory.h"
 #include"Math/Shapes/3D/Sphere/Sphere.h"
 #include"Actor\Unit/Base\UnitMessageID.h"
+#include"Math/Shapes/Renderer/ShapeRenderer.h"
 FactoryHeal::FactoryHeal(IWorld& world, UnitFactory* factory):
-	Object(factory->GetParam().Position() + MyVector3(0, 2, 0),MyMatrix4::Identity()),
+	Object(world.GetField()->OnPosition(factory->GetParam().Position()),MyMatrix4::Identity()),
 	m_world(world),
 	m_factory(factory),
 	m_model(MODEL_ID::CIRCLE),

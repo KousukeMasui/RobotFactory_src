@@ -39,12 +39,14 @@ std::vector<Point2> MetaAI::GetUnitPoints(const Unit & unit)
 		}
 		else{
 			//Œ»Ý‚ÌˆÊ’u‚ð•Û‘¶
-			start = PathFind3DUtility::ToNodePoint2(u->Position());;
+			start = PathFind3DUtility::ToNodePoint2(u->Position());
 		}
 		//Žü‚è‚àŽæ“¾‚·‚é
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int y = -1; y <= 1; y++) {
+				//Point2 r = start + Point2(x, y);
+				//if (r.x < 0 || r.y < 0) continue;
 				result.push_back(start + Point2(x, y));
 			}
 

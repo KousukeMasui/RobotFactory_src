@@ -50,10 +50,6 @@ public:
 	FactoryStatus& Status();
 
 	void StatusUp(FactoryStatusID id);
-	//生成開始
-	void CreateStart(const UnitStatus& status);
-	//生成処理
-	void Create(const UnitStatus& status);
 
 	//ダメージ関数
 	void Damage(float attack, InfluenceID influence);
@@ -81,10 +77,10 @@ private:
 	FactoryManager& m_manager;
 	StaticModel m_model;
 	Point2 m_point;
+	FactoryParam m_param;
 	//生成するユニットのステータス
 	FactoryStatus m_status;
 
-	FactoryParam m_param;
 	//周りのpoint
 	std::vector<Point2> m_circlePoints;
 	//周りのpoint

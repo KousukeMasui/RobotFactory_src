@@ -1,6 +1,8 @@
 #include "RootAgent.h"
 #include"Math/Converter.h"
-RootAgent::RootAgent(Object& object):
+#include"RootFind.h"
+RootAgent::RootAgent(RootFind& find,Object& object):
+	m_find(find),
 	m_object(object),
 	m_isFindWait(false),
 	m_rootModel(MODEL_ID::ROOT)
@@ -13,14 +15,11 @@ RootAgent::~RootAgent()
 
 void RootAgent::Update(float deltaTime, float range)
 {
+	m_toNextVelocity = MyVector3::Zero();
 	MyVector3 velocity;
 	do {
-		//Œo˜H‚ª‚È‚¢ê‡false
-		if (m_root.empty())
-		{
-			m_toNextVelocity = MyVector3::Zero();
-			return;
-		}
+		//Œo˜H‚ª‚È‚¢ê‡return
+		if (m_root.empty()) return;
 		//ˆÚ“®•ûŒü‚ğ‹‚ß‚é
 		velocity = m_root.back() - m_object.Position();
 
@@ -51,9 +50,19 @@ bool RootAgent::IsFindWait() const
 	return m_isFindWait;
 }
 
-void RootAgent::StartFind()
+void RootAgent::StartFind(const MyVector3 & target, bool isPriority)
 {
 	m_isFindWait = true;
+	m_find.PathFind(m_find.CreatePathFinder(), target, *this, isPriority);
+}
+
+void RootAgent::StartFind(const std::vector<Point2>& targets, const std::vector<Point2>& removes, bool isPriority)
+{
+	auto f = m_find.CreatePathFinder();
+	for (auto p : removes)
+		f[p]->SetWalkable(false);//ˆÚ“®•s‰Â‚Æ‚µ‚Äˆµ‚¤
+	m_isFindWait = true;
+	m_find.PathFind(f, targets, *this, isPriority);
 }
 
 void RootAgent::SetRoot(const MyVector3 & position)

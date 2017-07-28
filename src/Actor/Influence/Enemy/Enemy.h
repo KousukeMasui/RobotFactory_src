@@ -20,6 +20,9 @@ public:
 
 	LerpCursor& Cursor();
 
+private:
+	//命令するユニットを設定する
+	void OrderUnitSet();
 
 private:
 	//AIのステートパターンの統括クラス

@@ -33,6 +33,8 @@ public:
 	float Distance(const LiftObject& l, UnitFactory* f);
 	//一番近いユニットを返す
 	UnitPtr NearUnit(const Object& obj, const UnitPtrs& units);
+	//一番近い工場を返す
+	FactoryPtr NearFactory(const Object& obj, const FactoryPtrs& factorys);
 private:
 	//一番近い持てるオブジェクトを返す
 	LiftObjectPtr NearLeft(const Unit& unit,const LiftObjects& lifts);

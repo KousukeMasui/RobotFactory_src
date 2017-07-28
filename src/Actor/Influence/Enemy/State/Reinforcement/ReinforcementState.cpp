@@ -14,8 +14,8 @@
 ReinforcementState::ReinforcementState(IWorld & world, const Shaft & shaft, LerpCursor * cursor, UnitPtrs & units):
 	IState(),
 	m_world(world),
-	m_frontStatusAI(std::make_shared<FactoryStatusAI>()),
-	m_backStatusAI(std::make_shared<FactoryStatusAI>()),
+	m_frontStatusAI(),
+	m_backStatusAI(),
 	m_shaft(shaft),
 	m_cursor(cursor)
 {
@@ -35,21 +35,23 @@ ReinforcementState::~ReinforcementState()
 
 void ReinforcementState::Initialize()
 {
-
 	//ステータスの設定
 	std::vector<FactoryStatusID> status;
 	//前線の設定
-	status.push_back(FactoryStatusID::CREATE);
 	status.push_back(FactoryStatusID::HEAL_RANGE);
 	status.push_back(FactoryStatusID::HEAL_POWER);
-	m_frontStatusAI->SetPriority(status);
+	status.push_back(FactoryStatusID::CREATE);
+	status.push_back(FactoryStatusID::UNIT_ATK);
+	status.push_back(FactoryStatusID::UNIT_SPD);
+	status.push_back(FactoryStatusID::UNIT_HP);
+	m_frontStatusAI.SetPriority(status);
 	status.clear();
 	//後ろの設定
 	status.push_back(FactoryStatusID::UNIT_HP);
 	status.push_back(FactoryStatusID::CREATE);
 	status.push_back(FactoryStatusID::UNIT_ATK);
 	status.push_back(FactoryStatusID::UNIT_SPD);
-	m_backStatusAI->SetPriority(status);
+	m_backStatusAI.SetPriority(status);
 }
 
 void ReinforcementState::Update(float deltaTime)
@@ -79,6 +81,6 @@ void ReinforcementState::PowerUp()
 	//	m_factorysMap[InfluenceID::PLAYER],
 	//	front, back);
 	////強化処理
-	m_frontStatusAI->PowerUp(m_world.GetGameManager().GetFactoryManager().GetVector(InfluenceID::ENEMY));
+	m_frontStatusAI.PowerUp(m_world.GetGameManager().GetFactoryManager().GetVector(InfluenceID::ENEMY));
 	//m_backStatusAI->PowerUp(back);
 }

@@ -35,8 +35,9 @@ void GamePlayAutoState::Update(float deltaTime)
 {
 	//カメラの更新処理
 	m_world.GetCamera()->Update(deltaTime);
+	m_mouseSelect.Update(deltaTime);
 	//マウスカーソルがユニットに触れていたら取得
-	auto unit = m_mouseSelect.Update(deltaTime);
+	auto unit = m_mouseSelect.HitUnit();
 	//左クリックされたら
 	if (Mouse::GetInstance().IsPressUp(MouseCommand::LEFT))
 	{

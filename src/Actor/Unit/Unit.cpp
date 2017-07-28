@@ -19,7 +19,7 @@
 #include"Actor/UnitFactory/UnitFactory.h"
 
 const MyVector3 STAGE_CENTER = MyVector3(800.0f, 0.0f, 800.0f);
-Unit::Unit(IWorld & world, InfluenceID influence, const MyVector3& position, const UnitStatus& status) :
+Unit::Unit(IWorld & world, RootFind& find, InfluenceID influence, const MyVector3& position, const UnitStatus& status) :
 	LiftObject(LIFT_ID::UNIT, position),
 	m_world(world),
 	m_isDelete(false),
@@ -30,7 +30,7 @@ Unit::Unit(IWorld & world, InfluenceID influence, const MyVector3& position, con
 	m_status(status),
 	m_influence(influence),
 	m_toUnit(world.GetGameManager(),*this),
-	m_rootAgent(*this)
+	m_rootAgent(find,*this)
 {
 	m_model.Update(0.0f, GetPose());
 	m_AITree.SetRoot(std::make_shared<IdleNode>(m_world, *this));
@@ -102,12 +102,8 @@ void Unit::Heal(float value)
 	//回復処理が行われていない場合 エフェクトを生成しない
 	if ((m_status.Status(UNIT_STATUS_ID::HP) - prevHP) <= FLT_EPSILON * 2) return;
 	//エフェクト再生
-	auto effect = m_world.CreateEffect(EffectID::HEAL);
+	auto effect = m_world.CreateEffect(EffectID::HEAL, Position(),MyVector3(10,10,10));
 	effect->SetPositionFunc([&]() {return Position(); });
-	effect->SetScale(MyVector3(10, 10, 10));
-	//回復量をUI表示
-	//スクリーン座標に変換
-	//VECTOR screenUnitPos = ConvWorldPosToScreenPos(Converter::MyVector3ToVECTOR(m_position));
 }
 void Unit::LiftDown(FactoryPtr factory)
 {

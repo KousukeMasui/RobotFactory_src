@@ -11,17 +11,29 @@ MouseSelect::~MouseSelect()
 {
 }
 
-UnitPtr MouseSelect::Update(float deltaTime)
+void MouseSelect::Update(float deltaTime)
 {
 	auto line = Mouse::GetInstance().ToWorldLine();
 	HitInfo hit;
 	m_cursor.SetPosition(CursorPosition(line, hit));
 	m_cursor.Update(deltaTime);
+}
 
+UnitPtr MouseSelect::HitUnit() const
+{
 	auto unit = m_world.GetGameManager().GetMetaAI().Distance().NearUnit(m_cursor,
 		m_world.GetGameManager().GetUnitManager().GetVector(InfluenceID::PLAYER));
-	if(m_cursor.IsCollide(unit->GetSphere()))
+	if (m_cursor.IsCollide(unit->GetSphere()))
 		return unit;
+	return nullptr;
+}
+
+FactoryPtr MouseSelect::HitFactory() const
+{
+	auto factory = m_world.GetGameManager().GetMetaAI().Distance().NearFactory(m_cursor,
+		m_world.GetGameManager().GetFactoryManager().All());
+	if (m_cursor.IsCollide(&*factory))
+		return factory;
 	return nullptr;
 }
 

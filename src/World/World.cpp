@@ -79,7 +79,7 @@ void World::StageCreate()
 		if (csv.get(row, 0) == "NONE") id = InfluenceID::NONE;
 		if (csv.get(row, 0) == "PLAYER") id = InfluenceID::PLAYER;
 		if (csv.get(row, 0) == "ENEMY") id = InfluenceID::ENEMY;
-		m_gameManager->AddUnitFactory(*this, id, MyVector3(csv.getf(row, 1), csv.getf(row, 2), csv.getf(row, 3)));
+		m_gameManager->AddUnitFactory(*this, id,MyVector3(csv.getf(row, 1), csv.getf(row, 2), csv.getf(row, 3)));
 	}
 	AddLight(std::make_shared<Light>(*this, MyVector3(451.1f, 290.28f, 843.94f)));
 	m_field = std::make_shared<Field>();
@@ -177,9 +177,9 @@ void World::DebugSet(Enemy * enemy)
 	m_debug = std::make_shared<Debug>(*this, enemy->Cursor());
 }
 
-std::shared_ptr<Effect3D> World::CreateEffect(EffectID effect)
+std::shared_ptr<Effect3D> World::CreateEffect(EffectID effect, const MyVector3& position, const MyVector3& scale)
 {
-	return m_effectManager->CreateEffect(effect);
+	return m_effectManager->CreateEffect(effect,position,scale);
 }
 
 BillBoardManager & World::GetBillBoardManager()

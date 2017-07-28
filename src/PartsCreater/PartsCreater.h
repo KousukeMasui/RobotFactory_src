@@ -1,8 +1,8 @@
 #pragma once
 
 //Partsを生成するクラス
-
 class IWorld;
+#include"Base/RoadFinder/PathFinder.h"
 #include"Actor\Base\Actor3D.h"
 #include"Base/GameUsing.h"
 #include"Math/Point2/Point2.h"
@@ -26,4 +26,5 @@ private:
 	float m_createInterval;
 	//前回生成された位置
 	MyVector3 m_prevCreatePosition;
+	PathFinder m_finder;
 };

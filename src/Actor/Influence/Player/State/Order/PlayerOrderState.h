@@ -16,9 +16,8 @@ public:
 	int Next() const override;
 	bool IsEnd() const override;
 private:
-	//工場の中をクリックしていないかチェック&停止位置を再指定
-	void OrderClickFactory();
 private:
+	IWorld& m_world;
 	Player* m_player;
 	UnitPtr* m_unit;
 	bool m_isEnd;

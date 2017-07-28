@@ -34,8 +34,9 @@ void PlayerSelectState::Update(float deltaTime)
 			m_isEnd = true;
 			return;
 		}
+		
 		//ユニットをクリックしていない時
-		auto factory = m_player->GetCursor().IsCollide(m_world.GetGameManager().GetFactoryManager().GetVector(InfluenceID::PLAYER));
+		auto factory = m_player->GetMouseSelect().HitFactory();
 		if (factory != nullptr)
 		{
 			//シーンのステートを進める コマンドを開く

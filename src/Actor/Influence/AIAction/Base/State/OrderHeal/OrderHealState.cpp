@@ -35,8 +35,7 @@ void OrderHealState::Draw() const
 
 void OrderHealState::End()
 {
-	m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
-		m_targetPosition, m_unit->Agent());
+	m_unit->Agent().StartFind(m_targetPosition);
 }
 
 int OrderHealState::Next() const

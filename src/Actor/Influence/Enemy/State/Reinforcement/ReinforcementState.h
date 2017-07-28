@@ -2,12 +2,11 @@
 
 #include"Base/Manager/State/IState.h"
 #include"Base/GameUsing.h"
-class FactoryStatusAI;
+#include"../../FactoryStatusAI/FactoryStatusAI.h"
 class IWorld;
 #include"Base/AI/Priority/Shaft/Shaft.h"
 class LerpCursor;
-//工場を確保後のAI パーツ回収とユニット強化を主に行う
-//ここから攻撃AIを作成する
+//工場を確保後のAI
 class ReinforcementState : public IState
 {
 public:
@@ -23,13 +22,11 @@ public:
 private:
 	//強化関数
 	void PowerUp();
-	//守りが少ない工場を攻撃するAI
-	bool WeakFactoryAttack(UnitPtrs& units,const FactoryPtrs& myFactorys);
 private:
 	IWorld& m_world;
 	//前線とそれ以外で上げるステータスを変更するので
-	std::shared_ptr<FactoryStatusAI> m_frontStatusAI;
-	std::shared_ptr<FactoryStatusAI> m_backStatusAI;
+	FactoryStatusAI m_frontStatusAI;
+	FactoryStatusAI m_backStatusAI;
 
 	Shaft m_shaft;
 

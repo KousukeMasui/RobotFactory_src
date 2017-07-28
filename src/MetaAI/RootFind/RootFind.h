@@ -20,10 +20,10 @@ public:
 	//Œo˜H’Tõ—pƒNƒ‰ƒX¶¬
 	PathFinder CreatePathFinder();
 
-	//Œo˜H’Tõ
-	void PathFind(const PathFinder& finder,const MyVector3& target,RootAgent& agent);
-	//Œo˜H’Tõ
-	void PathFind(const PathFinder& finder, const std::vector<Point2>& targets,RootAgent& agent);
+	//Œo˜H’Tõ isPriority —Dæ‚µ‚ÄŒŸõ‚·‚é‚©
+	void PathFind(const PathFinder& finder,const MyVector3& target,RootAgent& agent,bool isPriority=false);
+	//Œo˜H’Tõ isPriority —Dæ‚µ‚ÄŒŸõ‚·‚é‚©
+	void PathFind(const PathFinder& finder, const std::vector<Point2>& targets,RootAgent& agent, bool isPriority = false);
 private:
 	Point2 ToNodePosition(const PathFinder& finder,const MyVector3& position);
 	void Find();

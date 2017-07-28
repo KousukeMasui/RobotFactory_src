@@ -6,7 +6,9 @@
 #include"Math/Collision/Collision3D.h"
 #include"Actor/Unit/Base/UnitMessageID.h"
 #include"Actor/UnitFactory/UnitFactory.h"
+#include"Base/VectorUtility/VectorUtility.h"
 PlayerOrderState::PlayerOrderState(IWorld& world,Player * player, UnitPtr * unit):
+	m_world(world),
 	m_player(player),
 	m_unit(unit),
 	m_isEnd(false)
@@ -42,12 +44,15 @@ void PlayerOrderState::End()
 {
 	//クリックした先に移動命令
 	if (m_unit->get() != nullptr) {
-		//auto target = m_player->GetMouseSelect().Update(0.0f);
-		//if (target == nullptr)
-			m_unit->get()->Agent().SetRoot(m_player->GetCursor().Position());
-		//else
-		//	m_unit->get()->Message((int)UnitMessageID::TO_UNIT, &target);
-		OrderClickFactory();
+		FactoryPtr factory = m_player->GetMouseSelect().HitFactory();
+		if (factory != nullptr)
+		{
+			auto removes = m_world.GetGameManager().GetMetaAI().GetUnitPoints(**m_unit);
+			auto targets = VectorUtility::NonObjects<Point2>(factory->GetPoints(), removes);
+			m_unit->get()->Agent().StartFind(targets, removes, false);
+		}
+		else
+			m_unit->get()->Agent().StartFind(m_player->GetMouseSelect().GetCursor().Position());
 	}
 	//選択解除
 	*m_unit = nullptr;
@@ -62,24 +67,3 @@ bool PlayerOrderState::IsEnd() const
 {
 	return m_isEnd;
 }
-
-void PlayerOrderState::OrderClickFactory()
-{
-	auto factory = m_player->GetCursor().IsCollide(m_factorys);
-	if (factory == nullptr) return;
-	//当たり判定を行い、接触点を求める
-	//ここでunitがnullになってエラー
-	auto hit = factory->GetParam().m_box.IsCollideRotate(Line3D(m_unit->get()->Position(), m_player->GetCursor().Position()));
-	//工場と触れている場合 工場に接した場所で停止するように目的地を変更
-	if (!hit.isHit) return;
-	MyVector3 velocity = hit.hitPosition - m_unit->get()->Position();
-	velocity.y = 0.0f;//高さは無効
-	if (velocity.Length() <= m_unit->get()->GetSphere().m_radius / 2.0f)
-	{
-		m_unit->get()->Agent().Delete();
-		return;
-	}
-
-	m_unit->get()->Agent().SetRoot(hit.hitPosition + hit.normal * m_unit->get()->GetSphere().m_radius);
-}
-

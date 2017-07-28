@@ -15,8 +15,9 @@
 #include"Actor/Unit/Base/UnitMessageID.h"
 const MyVector3 EFFECT_SCALE = MyVector3(60, 40, 60);
 
-UnitFactory::UnitFactory(IWorld& world, InfluenceID influence, const MyVector3& position, FactoryManager& manager):
+UnitFactory::UnitFactory(IWorld& world,RootFind& find, InfluenceID influence, const MyVector3& position, FactoryManager& manager):
 	m_world(world),
+	m_find(find),
 	m_manager(manager),
 	m_model(MODEL_ID::FACTORY,false, MyMatrix4::Scale(0.025f, 0.025f, 0.025f) * MyMatrix4::Translate(position) ),
 	m_point(PathFind3DUtility::ToNodePoint2(position)),
@@ -97,40 +98,6 @@ bool UnitFactory::IsCollide(const Unit & unit)
 {
 	return VectorUtility::IsExistence<Point2>(GetPoints(), PathFind3DUtility::ToNodePoint2(unit.Position()));
 }
-
-void UnitFactory::Collide(Unit & unit)
-{
-	//移動中でない場合
-	if (!unit.Agent().IsMove()) return;
-
-	//移動方向に工場がある場合
-	if (m_param.m_box.IsCollide(Ray(unit.Position(), unit.Agent().ToNextVelocity())).isHit)
-	{
-		//移動速度より近い(次のフレームで追い越す)場合
-		if (MyVector3::Distance(unit.Agent().EndPoint(), unit.Position()) <= unit.GetStatus().Status(UNIT_STATUS_ID::SPD) ||
-			IsCollide(Sphere(unit.Agent().EndPoint(), 1.0f), HitInfo())//工場を目的地としていた場合
-			)
-		{
-			//移動終了
-			unit.Agent().Delete();
-			return;
-		}
-
-		//エネミーの場合、経路探索で動いているので新しく経路を与えない
-		if (unit.GetInfluence() != InfluenceID::PLAYER) return;
-		//重なった場合などに毎フレーム呼び出されてしまうので
-		Ray ray(unit.Position(), unit.Agent().ToNextVelocity());
-		//次の目的地までの方向に工場がある場合
-		if (m_param.m_box.IsCollide(ray).isHit)
-		{
-			//経路探索
-			m_world.GetGameManager().GetMetaAI().GetFind().PathFind(
-				m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(), unit.Agent().EndPoint(), unit.Agent());
-		}
-
-	}
-}
-
 void UnitFactory::PartsCount(int add)
 {
 	m_status.partsCount += add;
@@ -166,7 +133,7 @@ void UnitFactory::CreateStart(const UnitStatus & status)
 
 void UnitFactory::Create(const UnitStatus & status)
 {
-	auto unit = std::make_shared<Unit>(m_world, m_param.influence, m_param.Position(), status);
+	auto unit = std::make_shared<Unit>(m_world,m_find, m_param.influence, m_param.Position(), status);
 	m_world.GetGameManager().AddUnit(InfluenceID::EFFECT, unit);
 	//ユニットが停止したら生成関数をもう一度行う
 	unit->CreateAI([&]() {
@@ -217,9 +184,7 @@ void UnitFactory::Heal(float power)
 	{
 		m_status.hp = std::fminf((m_status.hp + power), (float)m_status.maxHP);
 		//工場に回復エフェクトを作る
-		auto effect = m_world.CreateEffect(EffectID::HEAL);
-		effect->SetPosition(m_param.Position());
-		effect->SetScale(EFFECT_SCALE);
+		auto effect = m_world.CreateEffect(EffectID::HEAL, m_param.Position(),EFFECT_SCALE);
 	}
 }
 
@@ -229,7 +194,7 @@ void UnitFactory::PointsSet()
 	int left = 0;
 	int top = 0;
 	int bottom = 0;
-	PathFinder f = m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder();
+	PathFinder f = m_find.CreatePathFinder();
 	//center　+x,0が0になるまで回す
 	do
 	{

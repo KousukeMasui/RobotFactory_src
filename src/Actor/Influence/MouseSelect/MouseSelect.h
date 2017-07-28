@@ -10,7 +10,10 @@ public:
 	explicit MouseSelect(IWorld& world);
 	~MouseSelect();
 
-	UnitPtr Update(float deltaTime);
+	void Update(float deltaTime);
+
+	UnitPtr HitUnit() const;
+	FactoryPtr HitFactory() const;
 
 	SelectCursor& GetCursor();
 	void Draw() const;

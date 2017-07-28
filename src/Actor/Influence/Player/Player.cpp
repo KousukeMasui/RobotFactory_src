@@ -35,8 +35,9 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
+	m_mouseSelect.Update(deltaTime);
 	//マウスの先のユニットを取得
-	m_onMouseUnit = m_mouseSelect.Update(deltaTime);
+	m_onMouseUnit = m_mouseSelect.HitUnit();
 
 	m_stateManager.Update(deltaTime);
 
@@ -59,10 +60,6 @@ void Player::Select(const UnitPtr & unit)
 MouseSelect & Player::GetMouseSelect()
 {
 	return m_mouseSelect;
-}
-SelectCursor & Player::GetCursor()
-{
-	return m_mouseSelect.GetCursor();
 }
 
 void Player::OnMouseUnitStatusDraw()

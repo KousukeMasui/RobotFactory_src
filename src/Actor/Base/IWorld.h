@@ -44,7 +44,7 @@ public:
 	virtual void Command(const FactoryPtr& facotry = nullptr) = 0;
 	virtual FactoryPtr GetCommandFactory() const = 0;
 
-	virtual std::shared_ptr<Effect3D> CreateEffect(EffectID effect) = 0;
+	virtual std::shared_ptr<Effect3D> CreateEffect(EffectID effect, const MyVector3& position, const MyVector3& scale = MyVector3(1, 1, 1)) = 0;
 
 	virtual BillBoardManager& GetBillBoardManager() =0;
 	virtual void AddCamera(CameraMode mode, const std::shared_ptr<Camera>& camera) = 0;

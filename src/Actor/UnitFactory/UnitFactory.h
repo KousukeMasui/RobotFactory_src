@@ -16,10 +16,11 @@ struct Line3D;
 #include"Model/Model/Model.h"
 #include"AI/AutoAI.h"
 #include"Heal/FactoryHeal.h"
+class RootFind;
 class UnitFactory
 {
 public:
-	UnitFactory(IWorld& world, InfluenceID influence,const MyVector3& position,FactoryManager& manager);
+	UnitFactory(IWorld& world, RootFind& find, InfluenceID influence,const MyVector3& position,FactoryManager& manager);
 	~UnitFactory();
 
 	//¨—Í‚Ì•ÏX
@@ -42,7 +43,6 @@ public:
 
 	//‘Œ¹‚ğ’u‚­“™‚Ì”ÍˆÍ‚É“ü‚Á‚½‚çtrue
 	bool IsCollide(const Unit& unit);
-	void Collide(Unit& unit);
 	//‘Œ¹”‚ğ+‚·‚é
 	void PartsCount(int add);
 	int PartsCount() const;//‘Œ¹”‚Ìæ“¾
@@ -77,6 +77,7 @@ private:
 
 private:
 	IWorld& m_world;
+	RootFind& m_find;
 	FactoryManager& m_manager;
 	StaticModel m_model;
 	Point2 m_point;

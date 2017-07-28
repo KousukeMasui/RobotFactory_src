@@ -77,7 +77,8 @@ public:
 	//デバッグモードのための設定
 	void DebugSet(Enemy* enemy);
 
-	virtual std::shared_ptr<Effect3D> CreateEffect(EffectID effect) override;
+	virtual std::shared_ptr<Effect3D> CreateEffect(EffectID effect,
+		const MyVector3& position,const MyVector3& scale = MyVector3(1,1,1)) override;
 
 	virtual BillBoardManager& GetBillBoardManager() override;
 

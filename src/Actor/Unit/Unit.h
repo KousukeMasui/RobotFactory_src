@@ -16,7 +16,7 @@ class IWorld;
 class Unit : public LiftObject
 {
 public:
-	Unit(IWorld& world, InfluenceID influence,const MyVector3& position,const UnitStatus& status);
+	Unit(IWorld& world,RootFind& find, InfluenceID influence,const MyVector3& position,const UnitStatus& status);
 	~Unit();
 	//ê∂ê¨Ç≥ÇÍÇΩç€ÇÃèàóù
 	void CreateAI(const std::function<void()>& createFunc);

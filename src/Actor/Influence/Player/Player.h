@@ -18,7 +18,6 @@ public:
 
 	void Select(const UnitPtr& unit);
 	MouseSelect& GetMouseSelect();
-	SelectCursor& GetCursor();
 private:
 	//マウスの先にユニットがいる場合、ステータスを表示させる
 	void OnMouseUnitStatusDraw();

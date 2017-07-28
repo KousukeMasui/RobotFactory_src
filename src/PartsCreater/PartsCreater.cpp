@@ -15,7 +15,8 @@ const int MAX = 20;
 
 PartsCreater::PartsCreater(IWorld & world):
 	Actor3D(world,"",MyVector3::Zero()),
-	m_createInterval(MyMath::Random(60.0f, 180.0f))
+	m_createInterval(MyMath::Random(60.0f, 180.0f)),
+	m_finder(m_world->GetGameManager().GetMetaAI().GetFind().CreatePathFinder())
 {
 }
 
@@ -46,7 +47,7 @@ void PartsCreater::Create()
 		position = MyMath::Random(MinCreatePosition, MaxCreatePosition);
 		point = PathFind3DUtility::ToNodePoint2(position);
 	} while (MyVector3::Distance(position, m_prevCreatePosition) <= 20.0f ||
-		!m_world->GetGameManager().GetMetaAI().GetFind().CreatePathFinder()[point]->walkable()|| 
+		!m_finder[point]->walkable()||
 		VectorUtility::IsExistence<Point2>(points, point));
 
 	//ê∂ê¨

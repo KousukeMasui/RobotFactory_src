@@ -84,17 +84,30 @@ UnitPtr MetaDistance::NearUnit(const Object& obj, const UnitPtrs & units)
 	float min = FLT_MAX;
 	for (const auto u : units)
 	{
-
 		//同じユニットでは計算をしない
 		if (&*u == &obj) continue;
-
 		float distance = Distance(*u, obj);
 		if (distance <= min)
 		{
 			min = distance;
 			result = u;
 		}
-
+	}
+	return result;
+}
+FactoryPtr MetaDistance::NearFactory(const Object & obj, const FactoryPtrs & factorys)
+{
+	if (factorys.empty()) return nullptr;
+	FactoryPtr result = nullptr;
+	float min = FLT_MAX;
+	for (auto f : factorys)
+	{
+		float distance = Distance(obj,f->GetParam());
+		if (distance <= min)
+		{
+			min = distance;
+			result = f;
+		}
 	}
 	return result;
 }

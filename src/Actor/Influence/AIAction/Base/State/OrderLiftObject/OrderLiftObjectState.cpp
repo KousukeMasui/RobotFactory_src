@@ -35,8 +35,7 @@ void OrderLiftObjectState::Draw() const
 
 void OrderLiftObjectState::End()
 {
-	m_world.GetGameManager().GetMetaAI().GetFind().PathFind(m_world.GetGameManager().GetMetaAI().GetFind().CreatePathFinder(),
-		m_lift->Position(), m_unit->Agent());
+	m_unit->Agent().StartFind(m_lift->Position());
 }
 
 int OrderLiftObjectState::Next() const

@@ -36,10 +36,11 @@ void EffectManager::Draw() const
 	//GetEffekseer3DRenderer()->EndRendering();
 }
 
-std::shared_ptr<Effect3D> EffectManager::CreateEffect(EffectID effect)
+std::shared_ptr<Effect3D> EffectManager::CreateEffect(EffectID effect, const MyVector3& position, const MyVector3& scale)
 {
 	auto e = std::make_shared<Effect3D>(Loader::GetInstance().EffectHandle(effect));
-	
+	e->SetPosition(position);
+	e->SetScale(scale);
 	m_effects.push_front(e);
 
 	return e;

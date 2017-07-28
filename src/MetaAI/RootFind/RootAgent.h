@@ -3,15 +3,16 @@
 #include<functional>
 #include<vector>
 #include"Model/Model/Model.h"
+#include"Math/Point2/Point2.h"
+class RootFind;
 //経路探索で動くベースクラス
 //実際の移動はオブジェクト毎に違う処理を行いたいのでここに処理は書かない
 class RootAgent{
 public:
 	//コンストラクタ
-	explicit RootAgent(Object& object);
+	explicit RootAgent(RootFind& find,Object& object);
 	//デストラクタ
 	~RootAgent();
-
 	//更新
 	void Update(float deltaTime,float range);
 	//次の経路点への方向ベクトルを返す
@@ -21,7 +22,8 @@ public:
 	//経路探索待ちか
 	bool IsFindWait() const;
 	//経路探索中にする
-	void StartFind();
+	void StartFind(const MyVector3& target,bool isPriority=false);
+	void StartFind(const std::vector<Point2>& targets, const std::vector<Point2>& removes, bool isPriority = false);
 	//経路を与える
 	void SetRoot(const MyVector3& position);
 	void SetRoot(const std::vector<MyVector3>& root);
@@ -36,6 +38,7 @@ public:
 	//経路を描画
 	void Draw(const Color& color) const;
 private:
+	RootFind& m_find;
 	//経路探索で移動させるオブジェクト
 	Object& m_object;
 	//経路保存変数

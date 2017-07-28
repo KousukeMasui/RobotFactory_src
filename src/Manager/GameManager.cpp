@@ -13,7 +13,7 @@
 GameManager::GameManager() :
 	m_metaAI()
 {
-	//工場の初期値を読み込み
+	//工場の初期値を読み込み 工場はゲームスタート前に生成されるので先にロードする
 	m_csvData.Start("res/csv/factoryStatus.csv");
 	m_csvData.Set(DATA_TYPE::FLOAT,CSV_DATA_ID::FACTORY_MAX_HP, Point2(0, 1));
 	m_csvData.Set(DATA_TYPE::INT,CSV_DATA_ID::FACTORY_INIT_PARTS, Point2(1, 1));
@@ -38,9 +38,9 @@ void GameManager::GameStart(World& world)
 	CSVLoad();
 
 	//初期ユニット
-	m_unitManager.Add(InfluenceID::PLAYER, std::make_shared<Unit>(world, InfluenceID::PLAYER, 
+	m_unitManager.Add(InfluenceID::PLAYER, std::make_shared<Unit>(world,m_metaAI.GetFind(), InfluenceID::PLAYER, 
 		MyVector3(400.0f, 0.0f, 792.0f), UnitStatus(1, 1, 1, 10.0f,this)));
-	m_unitManager.Add(InfluenceID::ENEMY, std::make_shared<Unit>(world, InfluenceID::ENEMY, 
+	m_unitManager.Add(InfluenceID::ENEMY, std::make_shared<Unit>(world, m_metaAI.GetFind(), InfluenceID::ENEMY,
 		MyVector3(1250.0f, 0.0f, 792.0f), UnitStatus(1, 1, 1, 10.0f, this)));
 
 	//プレイヤー生成
@@ -62,7 +62,7 @@ void GameManager::AddUnit(InfluenceID influence, const std::shared_ptr<Unit>& un
 
 void GameManager::AddUnitFactory(IWorld & world, InfluenceID influence, const MyVector3 & position)
 {
-	m_factoryManager.Add(influence, std::make_shared<UnitFactory>(world, influence, position, m_factoryManager));
+	m_factoryManager.Add(influence, std::make_shared<UnitFactory>(world,GetMetaAI().GetFind(), influence, position, m_factoryManager));
 	
 }
 void GameManager::AddParts(const std::shared_ptr<Parts>& parts)
@@ -110,18 +110,6 @@ void GameManager::Update(float deltaTime)
 	{
 		itr->get()->NonInfluenceUpdate(deltaTime);
 	}
-	m_factoryManager.Function(
-		[&](std::shared_ptr<UnitFactory> factory)
-	{
-		auto units = m_unitManager.GetOther(InfluenceID::EFFECT);
-		for (auto unit : units)
-		{
-			if (factory->IsCollide(*unit))
-			{
-				factory->Collide(*unit);
-			}
-		}
-	});
 
 	m_partsManager.Remove();
 

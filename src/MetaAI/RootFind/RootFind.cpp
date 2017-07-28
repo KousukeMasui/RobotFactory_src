@@ -14,7 +14,7 @@ RootFind::~RootFind()
 void RootFind::Update(float deltaTime)
 {
 	m_frameTimer += deltaTime;
-	if (m_frameTimer >= 60.0f)
+	if (m_frameTimer >= 60.0f)//1•b‚½‚Á‚½‚ç
 	{
 		m_frameTimer = 0.0f;
 		m_nowSecondFind = 0;
@@ -27,28 +27,35 @@ PathFinder RootFind::CreatePathFinder()
 	return PathFinder(m_field);
 }
 
-void RootFind::PathFind(const PathFinder & finder, const MyVector3 & target, RootAgent& agent)
+void RootFind::PathFind(const PathFinder & finder, const MyVector3 & target, RootAgent& agent, bool isPriority)
 {
 	//Šù‚É“o˜^Ï‚İ‚Ìê‡“o˜^‚µ‚È‚¢
 	for (auto fData : m_findTargetData) {
 		if (&fData.agent == &agent) return;
 	}
-	agent.StartFind();
+	if (isPriority) {
+		m_findTargetData.push_front(FindTargetData(finder, agent, target));
+		m_findIDs.push_front(FindID::SINGLE);
+		return;
+	}
 	m_findTargetData.push_back(FindTargetData(finder, agent, target));
 	m_findIDs.push_back(FindID::SINGLE);
 }
 
-void RootFind::PathFind(const PathFinder & finder, const std::vector<Point2>& targets, RootAgent& agent)
+void RootFind::PathFind(const PathFinder & finder, const std::vector<Point2>& targets, RootAgent& agent, bool isPriority)
 {
 	//Šù‚É“o˜^Ï‚İ‚Ìê‡“o˜^‚µ‚È‚¢
 	for (auto fData : m_findMultiTargetData) {
 		if (&fData.agent == &agent) return;
 	}
-	agent.StartFind();
 	PathFinder f = finder;
 	f.AddTargets(targets);
+	if (isPriority) {
+		m_findMultiTargetData.push_front(FindMultiTargetData(f, agent));
+		m_findIDs.push_front(FindID::MULTI);
+		return;
+	}
 	m_findMultiTargetData.push_back(FindMultiTargetData(f, agent));
-
 	m_findIDs.push_back(FindID::MULTI);
 }
 
